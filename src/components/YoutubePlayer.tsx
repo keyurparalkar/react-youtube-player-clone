@@ -1,7 +1,8 @@
 import { useRef, useState } from "react";
 import styled from "styled-components";
+
 import BezelIcon from "./BezelIcon";
-import PlayButton from "./PlayButton";
+import ControlToolbar from "./ControlToolbar";
 
 const StyledVideoContainer = styled.div<{ isPlaying: boolean }>`
   position: relative;
@@ -14,16 +15,6 @@ const StyledVideoContainer = styled.div<{ isPlaying: boolean }>`
   &:hover .video-controls {
     display: block;
   }
-`;
-
-const StyledVideoControl = styled.div`
-  position: absolute;
-  width: 100%;
-  color: #eee;
-  bottom: 0rem;
-  background: #ffffff00;
-  background: linear-gradient(180deg, #ffffff00, #010101);
-  display: none;
 `;
 
 const YoutubePlayer = () => {
@@ -53,10 +44,7 @@ const YoutubePlayer = () => {
         />
       </div>
       <BezelIcon isPlaying={isPlaying} />
-      <StyledVideoControl className="video-controls">
-        <PlayButton onClick={onPlayPause} isPlaying={isPlaying} />
-        <div id="volume"></div>
-      </StyledVideoControl>
+      <ControlToolbar onClick={onPlayPause} isPlaying={isPlaying} />
     </StyledVideoContainer>
   );
 };
