@@ -3,16 +3,27 @@ import styled from "styled-components";
 import BezelIcon from "./BezelIcon";
 import PlayButton from "./PlayButton";
 
-const StyledVideoContainer = styled.div`
+const StyledVideoContainer = styled.div<{ isPlaying: boolean }>`
   position: relative;
   width: fit-content;
+
+  & .video-controls {
+    display: ${(props) => (props.isPlaying ? "none" : "block")};
+  }
+
+  &:hover .video-controls {
+    display: block;
+  }
 `;
 
 const StyledVideoControl = styled.div`
   position: absolute;
-  bottom: 1rem;
   width: 100%;
   color: #eee;
+  bottom: 0rem;
+  background: #ffffff00;
+  background: linear-gradient(180deg, #ffffff00, #010101);
+  display: none;
 `;
 
 const YoutubePlayer = () => {
@@ -34,7 +45,7 @@ const YoutubePlayer = () => {
   };
 
   return (
-    <StyledVideoContainer>
+    <StyledVideoContainer isPlaying={isPlaying}>
       <div onClick={onPlayPause} className="html-video-container">
         <video
           ref={videoRef}
@@ -42,7 +53,7 @@ const YoutubePlayer = () => {
         />
       </div>
       <BezelIcon isPlaying={isPlaying} />
-      <StyledVideoControl id="video-controls">
+      <StyledVideoControl className="video-controls">
         <PlayButton onClick={onPlayPause} isPlaying={isPlaying} />
         <div id="volume"></div>
       </StyledVideoControl>
