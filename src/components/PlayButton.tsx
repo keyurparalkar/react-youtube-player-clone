@@ -1,13 +1,5 @@
 import { HiMiniPlay, HiMiniPause } from "react-icons/hi2";
-import styled from "styled-components";
-
-const StyledPlayPauseButton = styled.button`
-  background-color: transparent;
-  border: none;
-  width: 40px;
-  float: left;
-  color: inherit;
-`;
+import { StyledIconButton } from "./utilities";
 
 export type PlayButtonProps = {
   onClick: () => void;
@@ -16,9 +8,9 @@ export type PlayButtonProps = {
 
 const PlayButton = ({ onClick, isPlaying }: PlayButtonProps) => {
   return (
-    <StyledPlayPauseButton onClick={onClick}>
+    <StyledIconButton onClick={onClick}>
       {isPlaying ? <HiMiniPause size="35px" /> : <HiMiniPlay size="35px" />}
-    </StyledPlayPauseButton>
+    </StyledIconButton>
   );
 };
 

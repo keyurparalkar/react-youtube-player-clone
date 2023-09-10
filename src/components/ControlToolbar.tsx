@@ -1,5 +1,9 @@
+import { forwardRef } from "react";
 import styled from "styled-components";
 import PlayButton, { PlayButtonProps } from "./PlayButton";
+import VolumeControl, { VolumeControlProps } from "./VolumeControl";
+
+type ControlToolbarProps = VolumeControlProps & PlayButtonProps;
 
 const StyledVideoControl = styled.div`
   position: absolute;
@@ -11,16 +15,24 @@ const StyledVideoControl = styled.div`
   display: none;
 `;
 
-const ControlToolbar = ({
-  onClick: onPlayPause,
-  isPlaying,
-}: PlayButtonProps) => {
+const ControlToolbar = (
+  { onClick: onPlayPause, isPlaying, muted, volume, onMute }: ControlToolbarProps,
+  ref: any
+) => {
+  /**
+   * We can forward ref here
+   * Make use of reducer to handle state logic
+   * Move onPlayPause here and in the parent component make use of useImperativeHandle
+   * Event handlers:
+   * 1. onPlayPause
+   * 2. onMute
+   */
   return (
     <StyledVideoControl className="video-controls">
       <PlayButton onClick={onPlayPause} isPlaying={isPlaying} />
-      <div id="volume"></div>
+      <VolumeControl volume={volume} muted={muted} onMute={onMute}/>
     </StyledVideoControl>
   );
 };
 
-export default ControlToolbar;
+export default forwardRef(ControlToolbar);

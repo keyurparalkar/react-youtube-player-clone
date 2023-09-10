@@ -27,11 +27,15 @@ const YoutubePlayer = () => {
       setIsPlaying(video.paused);
       if (video.paused || video.ended) {
         video.play();
-        // setIsPlaying(false);
       } else {
         video.pause();
-        // setIsPlaying(true);
       }
+    }
+  };
+
+  const onMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !videoRef.current.muted;
     }
   };
 
@@ -44,7 +48,14 @@ const YoutubePlayer = () => {
         />
       </div>
       <BezelIcon isPlaying={isPlaying} />
-      <ControlToolbar onClick={onPlayPause} isPlaying={isPlaying} />
+      <ControlToolbar
+        onClick={onPlayPause}
+        isPlaying={isPlaying}
+        muted={videoRef.current?.muted}
+        onMute={onMute}
+        volume={videoRef.current?.volume}
+        ref={videoRef}
+      />
     </StyledVideoContainer>
   );
 };

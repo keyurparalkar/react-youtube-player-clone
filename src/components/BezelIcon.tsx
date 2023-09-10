@@ -1,6 +1,6 @@
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { HiMiniPlay, HiMiniPause } from "react-icons/hi2";
-import styled, { css, keyframes } from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { PlayButtonProps } from "./PlayButton";
 
 type BezelIconProps = Pick<PlayButtonProps, "isPlaying">;
