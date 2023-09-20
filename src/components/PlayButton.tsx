@@ -1,14 +1,19 @@
+import { useContext } from "react";
 import { HiMiniPlay, HiMiniPause } from "react-icons/hi2";
-import { StyledIconButton } from "./utilities";
+import { PlayerContext, PlayerDispatchContext } from "../context";
+import { PLAY_PAUSE } from "../context/actions";
+import { StyledIconButton } from "../utils";
 
-export type PlayButtonProps = {
-  onClick: () => void;
-  isPlaying?: boolean;
-};
 
-const PlayButton = ({ onClick, isPlaying }: PlayButtonProps) => {
+const PlayButton = () => {
+  const { isPlaying } = useContext(PlayerContext);
+  const dispatch = useContext(PlayerDispatchContext);
+  const onPlayPause = () => {
+    dispatch({ type: PLAY_PAUSE, payload: !isPlaying });
+  };
+
   return (
-    <StyledIconButton onClick={onClick}>
+    <StyledIconButton onClick={onPlayPause}>
       {isPlaying ? <HiMiniPause size="35px" /> : <HiMiniPlay size="35px" />}
     </StyledIconButton>
   );

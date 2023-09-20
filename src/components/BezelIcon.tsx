@@ -1,9 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { HiMiniPlay, HiMiniPause } from "react-icons/hi2";
 import styled, { keyframes } from "styled-components";
-import { PlayButtonProps } from "./PlayButton";
-
-type BezelIconProps = Pick<PlayButtonProps, "isPlaying">;
+import { PlayerContext } from "../context";
 
 const bezelFadeoutKeyframe = keyframes`
     0% {
@@ -16,7 +14,7 @@ const bezelFadeoutKeyframe = keyframes`
     }
 `;
 
-const StyledBezelContainer = styled.div<BezelIconProps>`
+const StyledBezelContainer = styled.div`
   position: absolute;
   top: 44%;
   left: 44%;
@@ -28,9 +26,10 @@ const StyledBezelContainer = styled.div<BezelIconProps>`
   display: none;
 `;
 
-const BezelIcon = ({ isPlaying }: BezelIconProps) => {
+const BezelIcon = () => {
   const iconContainerRef = useRef<HTMLDivElement>(null);
   const isFirstRender = useRef(true);
+  const { isPlaying } = useContext(PlayerContext);
 
   useEffect(() => {
     /**

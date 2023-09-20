@@ -1,18 +1,33 @@
+import { useState } from "react";
+import styled from "styled-components";
 import MuteButton from "./MuteButton";
-import VolumePanel from "./VolumePanel";
+import VolumePanel, { VolumePanelProps } from "./VolumePanel";
 
-export type VolumeControlProps = {
-  muted?: boolean;
-  volume?: number;
-  onMute?: () => void;
-};
+const StyledVolumeControl = styled.div`
+  width: 20%;
+  display: flex;
+  align-items: center;
+`;
 
-const VolumeControl = ({ volume, muted, onMute }: VolumeControlProps) => {
+const VolumeControl = () => {
+  const [isVolumeControlHovered, setIsVolumeControlHovered] = useState(false);
+
+  const onMouseEnter = () => {
+    setIsVolumeControlHovered(true);
+  };
+
+  const onMouseLeave = () => {
+    setIsVolumeControlHovered(false);
+  };
   return (
-    <div className="volume-control">
-      <MuteButton muted={muted} onMute={onMute}/>
-      <VolumePanel />
-    </div>
+    <StyledVolumeControl
+      className="volume-control"
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
+      <MuteButton />
+      <VolumePanel isHovered={isVolumeControlHovered} />
+    </StyledVolumeControl>
   );
 };
 

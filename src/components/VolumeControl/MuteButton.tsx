@@ -1,23 +1,23 @@
 import { motion, useAnimationControls } from "framer-motion";
-import { useState } from "react";
-import { VolumeControlProps } from ".";
-import { StyledIconButton } from "../utilities";
+import { useContext } from "react";
+import { PlayerContext, PlayerDispatchContext } from "../../context";
+import { ON_MUTE } from "../../context/actions";
+import { StyledIconButton } from "../../utils";
 
-const MuteButton = ({
-  muted,
-  onMute,
-}: Pick<VolumeControlProps, "muted" | "onMute">) => {
-  const [isMuted, setIsMuted] = useState<boolean | undefined>(muted);
+const MuteButton = () => {
+  const { muted } = useContext(PlayerContext);
+  const dispatch = useContext(PlayerDispatchContext);
+
   const controls = useAnimationControls();
 
   const handleMuteClick = () => {
-    if (onMute) {
-      setIsMuted(!isMuted);
-      onMute();
-    }
+    dispatch({
+      type: ON_MUTE,
+      payload: !muted,
+    });
 
     controls.start({
-      pathLength: isMuted ? 0 : 1,
+      pathLength: muted ? 0 : 1,
       transition: {
         duration: 0.5,
         ease: "linear",
@@ -52,7 +52,7 @@ const MuteButton = ({
         <motion.path
           d="M 1,1 L 100,100"
           stroke-width="2"
-          initial={{ pathLength: isMuted ? 1 : 0 }}
+          initial={{ pathLength: muted ? 1 : 0 }}
           animate={controls}
         />
       </motion.svg>
