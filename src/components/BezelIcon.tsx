@@ -54,7 +54,7 @@ const BezelIcon = () => {
     return () => {
       clearTimeout(timerId);
     };
-  });
+  }, [isPlaying]);
 
   return (
     <StyledBezelContainer ref={iconContainerRef}>
