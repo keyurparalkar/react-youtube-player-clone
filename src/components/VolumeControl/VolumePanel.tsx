@@ -95,7 +95,7 @@ const VolumePanel = ({ isHovered }: VolumePanelProps) => {
         }
       );
     }
-  }, [isHovered, animate, scope]);
+  }, [isHovered]);
 
   return (
     <StyledPanelContainer ref={scope} isHovered={isHovered}>
