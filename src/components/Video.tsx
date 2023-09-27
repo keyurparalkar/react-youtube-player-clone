@@ -36,7 +36,6 @@ const Video = () => {
 
   return (
     <div onClick={onPlayPause} className="html-video-container">
-      <div>{JSON.stringify({ isPlaying, muted, volume }, null, 2)}</div>
       <video
         ref={videoRef}
         src="http://iandevlin.github.io/mdn/video-player/video/tears-of-steel-battle-clip-medium.mp4"

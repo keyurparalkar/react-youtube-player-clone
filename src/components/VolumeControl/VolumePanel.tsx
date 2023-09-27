@@ -13,7 +13,7 @@ const StyledPanelContainer = styled.div`
   width: 60px;
   height: 10px;
   overflow: hidden;
-  padding-top: 10px;
+  padding-top: 5px;
 `;
 
 const StyledVideoSlider = styled(motion.div)`

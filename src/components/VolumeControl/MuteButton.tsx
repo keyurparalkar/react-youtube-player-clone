@@ -26,14 +26,14 @@ const MuteButton = () => {
   };
 
   return (
-    <StyledIconButton onClick={handleMuteClick} iconSize="2rem">
+    <StyledIconButton onClick={handleMuteClick}>
       <motion.svg
         stroke="currentColor"
         fill="currentColor"
         stroke-width="0"
-        viewBox="0 0 24 24"
-        height="1em"
-        width="1em"
+        viewBox="0 0 45 24"
+        height="24px"
+        // width="1em"
         xmlns="http://www.w3.org/2000/svg"
       >
         <motion.path d="M16 21c3.527-1.547 5.999-4.909 5.999-9S19.527 4.547 16 3v2c2.387 1.386 3.999 4.047 3.999 7S18.387 17.614 16 19v2z"></motion.path>
