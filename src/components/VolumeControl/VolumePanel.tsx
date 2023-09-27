@@ -54,7 +54,7 @@ const VolumePanel = ({ isHovered }: VolumePanelProps) => {
 
   const thumbRef = useRef<HTMLDivElement>(null);
 
-  const onDrag = () => {
+  const onDrag = (e: any) => {
     if (thumbRef.current) {
       const transformStyle = thumbRef.current.style.transform;
       if (transformStyle !== "none") {
@@ -73,6 +73,7 @@ const VolumePanel = ({ isHovered }: VolumePanelProps) => {
       }
     }
   };
+
   useEffect(() => {
     if (isHovered) {
       animate(
@@ -96,17 +97,14 @@ const VolumePanel = ({ isHovered }: VolumePanelProps) => {
     }
   }, [isHovered, animate, scope]);
 
-  useEffect(() => {
-    if (thumbRef.current) {
-      thumbRef.current.style.transform = `translateX(${volume * 48}px)`;
-    }
-  }, [volume]);
-
   return (
     <StyledPanelContainer ref={scope} isHovered={isHovered}>
       <StyledVideoSlider
         className="volume-slider"
         drag="x"
+        initial={{
+          x: volume * 48,
+        }}
         dragConstraints={{ left: 0, right: 48 }}
         dragElastic={0}
         dragMomentum={false}
