@@ -1,5 +1,5 @@
 import { motion, useAnimate } from "framer-motion";
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect } from "react";
 import styled from "styled-components";
 import { PlayerContext, PlayerDispatchContext } from "../../context";
 import { VOLUME_CHANGE } from "../../context/actions";
@@ -8,7 +8,7 @@ export type VolumePanelProps = {
   isHovered: boolean;
 };
 
-const StyledPanelContainer = styled.div<VolumePanelProps>`
+const StyledPanelContainer = styled.div`
   position: relative;
   width: 60px;
   height: 10px;
@@ -16,7 +16,7 @@ const StyledPanelContainer = styled.div<VolumePanelProps>`
   padding-top: 10px;
 `;
 
-const StyledVideoSlider = styled(motion.div)<any>`
+const StyledVideoSlider = styled(motion.div)`
   position: absolute;
   width: 12px;
   height: 12px;
@@ -49,14 +49,13 @@ const StyledVideoSlider = styled(motion.div)<any>`
 
 const VolumePanel = ({ isHovered }: VolumePanelProps) => {
   const [scope, animate] = useAnimate();
+  const [sliderScope, sliderAnimate] = useAnimate();
   const dispatch = useContext(PlayerDispatchContext);
-  const { volume } = useContext(PlayerContext);
+  const { volume, muted } = useContext(PlayerContext);
 
-  const thumbRef = useRef<HTMLDivElement>(null);
-
-  const onDrag = (e: any) => {
-    if (thumbRef.current) {
-      const transformStyle = thumbRef.current.style.transform;
+  const onDrag = () => {
+    if (sliderScope.current) {
+      const transformStyle = sliderScope.current.style.transform;
       if (transformStyle !== "none") {
         const current = parseFloat(transformStyle.replace(/[^\d.]/g, ""));
         let newVolume = current / 48;
@@ -95,10 +94,24 @@ const VolumePanel = ({ isHovered }: VolumePanelProps) => {
         }
       );
     }
-  }, [isHovered]);
+  }, [isHovered, animate, scope]);
+
+  useEffect(() => {
+    sliderAnimate(
+      sliderScope.current,
+      {
+        x: muted ? 0 : volume * 48,
+      },
+      {
+        ease: "linear",
+        duration: 0.1,
+      }
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [muted, sliderAnimate, sliderScope]);
 
   return (
-    <StyledPanelContainer ref={scope} isHovered={isHovered}>
+    <StyledPanelContainer ref={scope}>
       <StyledVideoSlider
         className="volume-slider"
         drag="x"
@@ -109,8 +122,7 @@ const VolumePanel = ({ isHovered }: VolumePanelProps) => {
         dragElastic={0}
         dragMomentum={false}
         onDrag={onDrag}
-        vol={volume}
-        ref={thumbRef}
+        ref={sliderScope}
       />
     </StyledPanelContainer>
   );
