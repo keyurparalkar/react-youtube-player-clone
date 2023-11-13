@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import MuteButton from "./MuteButton";
-import VolumePanel, { VolumePanelProps } from "./VolumePanel";
+import VolumePanel from "./VolumePanel";
 
 const StyledVolumeControl = styled.div`
   width: 20%;

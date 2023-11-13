@@ -59,7 +59,7 @@ const VolumePanel = ({ isHovered }: VolumePanelProps) => {
       if (transformStyle !== "none") {
         const current = parseFloat(transformStyle.replace(/[^\d.]/g, ""));
         let newVolume = current / 48;
-        if (newVolume < 0) {
+        if (newVolume <= 0.03) {
           newVolume = 0;
         }
         if (newVolume > 1) {
