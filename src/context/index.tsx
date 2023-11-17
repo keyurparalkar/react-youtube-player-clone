@@ -1,4 +1,4 @@
-import { createContext, Dispatch, Reducer, useReducer } from 'react';
+import { createContext, Dispatch, ReactElement, Reducer, useReducer } from 'react';
 import { HAS_VIDEO_LOADED, ON_MUTE, PLAY_PAUSE, VOLUME_CHANGE } from './actions';
 
 type StateProps = {
@@ -12,6 +12,10 @@ type ActionProps = {
     type: string;
     // eslint-disable-next-line
     payload?: any;
+};
+
+type PlayerProviderProps = {
+    children?: ReactElement;
 };
 
 export const initialState = {
@@ -60,7 +64,7 @@ export const playerReducer = (state: StateProps, action: ActionProps) => {
     }
 };
 
-export const PlayerProvider = ({ children }: any) => {
+export const PlayerProvider = ({ children }: PlayerProviderProps) => {
     const [state, dispatch] = useReducer<Reducer<StateProps, ActionProps>>(playerReducer, initialState);
 
     return (
