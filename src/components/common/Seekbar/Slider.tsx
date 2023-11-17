@@ -1,9 +1,9 @@
-import { motion, useAnimate } from 'framer-motion';
+import { motion } from 'framer-motion';
 import styled from 'styled-components';
 
 type SliderProps = {
     parentWidth: number;
-    initial: number;
+    initialPos?: number;
 };
 
 const StyledVideoSlider = styled(motion.div)<SliderProps>`
@@ -38,39 +38,40 @@ const StyledVideoSlider = styled(motion.div)<SliderProps>`
 `;
 
 const Slider = (props: SliderProps) => {
-    const { initial, parentWidth } = props;
+    const { initialPos, parentWidth } = props;
 
-    const [sliderScope, sliderAnimate] = useAnimate();
+    // const [sliderScope, sliderAnimate] = useAnimate();
 
-    const onDrag = () => {
-        if (sliderScope.current) {
-            const transformStyle = sliderScope.current.style.transform;
-            if (transformStyle !== 'none') {
-                const current = parseFloat(transformStyle.replace(/[^\d.]/g, ''));
-                let newVolume = current / 48;
-                if (newVolume <= 0.03) {
-                    newVolume = 0;
-                }
-                if (newVolume > 1) {
-                    newVolume = 1;
-                }
-                // if (onDragEvent) onDragEvent();
-            }
-        }
-    };
+    // Custom drag event to occur:
+    // const onDrag = () => {
+    //     if (sliderScope.current) {
+    //         const transformStyle = sliderScope.current.style.transform;
+    //         if (transformStyle !== 'none') {
+    //             const current = parseFloat(transformStyle.replace(/[^\d.]/g, ''));
+    //             let newVolume = current / 48;
+    //             if (newVolume <= 0.03) {
+    //                 newVolume = 0;
+    //             }
+    //             if (newVolume > 1) {
+    //                 newVolume = 1;
+    //             }
+    //             // if (onDragEvent) onDragEvent();
+    //         }
+    //     }
+    // };
 
     return (
         <StyledVideoSlider
             className="volume-slider"
             drag="x"
             initial={{
-                x: initial * 800,
+                x: initialPos ? initialPos * parentWidth : 0,
             }}
-            dragConstraints={{ left: 0, right: 790 }} // contraint the slider not till 100% till 100% - 12px of the diameter
+            dragConstraints={{ left: 0, right: parentWidth - 10 }} // contraint the slider not till 100% till 100% - 12px of the diameter
             dragElastic={0}
             dragMomentum={false}
-            onDrag={onDrag}
-            ref={sliderScope}
+            // onDrag={onDrag}
+            // ref={sliderScope}
             parentWidth={parentWidth}
         />
     );

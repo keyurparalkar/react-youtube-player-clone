@@ -1,10 +1,9 @@
-import { useAnimate } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import Slider from './Slider';
 
 export type SeekbarProps = {
-    initial?: number;
+    initialPos?: number;
     onDragEvent?: () => void;
 };
 
@@ -16,49 +15,11 @@ const StyledPanelContainer = styled.div`
     padding-top: 5px;
 `;
 
-// type SliderProps = {
-//     parentWidth: number;
-// };
-
-// const StyledVideoSlider = styled(motion.div)<SliderProps>`
-//     position: absolute;
-//     width: 12px;
-//     height: 12px;
-//     background-color: white;
-//     border-radius: 50%;
-//     margin-top: -5px;
-//     cursor: pointer;
-//     user-select: none;
-
-//     &::before {
-//         content: '';
-//         background-color: white;
-//         position: absolute;
-//         width: ${(props) => props?.parentWidth}px;
-//         height: 3px;
-//         left: -${(props) => props?.parentWidth}px;
-//         margin-top: 5px;
-//     }
-
-//     &::after {
-//         content: '';
-//         background-color: #877c7c;
-//         position: absolute;
-//         width: ${(props) => props?.parentWidth}px;
-//         height: 3px;
-//         margin-top: 5px;
-//         left: 12px;
-//     }
-// `;
-
-/**
- * The issue of seekbar is easy to solve. We should only load the controls whenever the video's first frame or data is available
- */
 const Seekbar = (props: SeekbarProps) => {
-    const { initial = 0 } = props;
-    const [scope, animate] = useAnimate();
+    const { initialPos = 0 } = props;
+    // const [scope, animate] = useAnimate();
+    const scope = useRef<HTMLDivElement | null>(null);
     const [parentWidth, setParentWidth] = useState(0);
-    // const [sliderScope, sliderAnimate] = useAnimate();
 
     // const onDrag = () => {
     //     if (sliderScope.current) {
@@ -113,11 +74,6 @@ const Seekbar = (props: SeekbarProps) => {
     //     );
     //     // eslint-disable-next-line react-hooks/exhaustive-deps
     //   }, [muted, sliderAnimate, sliderScope]);
-    // if(scope.current){
-    //     return scope.current.clientWidth
-    // }
-    //   const parentWidth = useMemo(() => {
-    //   }, [scope.current])
 
     useEffect(() => {
         if (scope.current) {
@@ -127,20 +83,7 @@ const Seekbar = (props: SeekbarProps) => {
 
     return (
         <StyledPanelContainer ref={scope}>
-            {/* <StyledVideoSlider
-                className="volume-slider"
-                drag="x"
-                initial={{
-                    x: initial * 800,
-                }}
-                dragConstraints={{ left: 0, right: 790 }} // contraint the slider not till 100% till 100% - 12px of the diameter
-                dragElastic={0}
-                dragMomentum={false}
-                onDrag={onDrag}
-                ref={sliderScope}
-                parentWidth={parentWidth}
-            /> */}
-            <Slider initial={initial} parentWidth={parentWidth} />
+            <Slider initialPos={initialPos} parentWidth={parentWidth} />
         </StyledPanelContainer>
     );
 };
