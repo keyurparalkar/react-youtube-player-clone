@@ -1,10 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
+import { motion, useAnimate } from 'framer-motion';
+import { forwardRef, Ref, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import styled from 'styled-components';
-import Slider from './Slider';
 
 export type SeekbarProps = {
     initialPos?: number;
-    onDragEvent?: () => void;
+    onPositionChange?: (sliderRef: Ref<HTMLDivElement>) => void;
+};
+
+type SliderProps = {
+    parentWidth: number;
 };
 
 const StyledPanelContainer = styled.div`
@@ -15,10 +19,43 @@ const StyledPanelContainer = styled.div`
     padding-top: 5px;
 `;
 
-const Seekbar = (props: SeekbarProps) => {
-    const { initialPos = 0 } = props;
+const StyledVideoSlider = styled(motion.div)<SliderProps>`
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background-color: white;
+    border-radius: 50%;
+    margin-top: -5px;
+    cursor: pointer;
+    user-select: none;
+
+    &::before {
+        content: '';
+        background-color: white;
+        position: absolute;
+        width: ${(props) => props?.parentWidth}px;
+        height: 3px;
+        left: -${(props) => props?.parentWidth}px;
+        margin-top: 5px;
+    }
+
+    &::after {
+        content: '';
+        background-color: #877c7c;
+        position: absolute;
+        width: ${(props) => props?.parentWidth}px;
+        height: 3px;
+        margin-top: 5px;
+        left: 12px;
+    }
+`;
+
+// Make use of imperative handle to provide access to the sliderAnimate function or sliderScope;
+const Seekbar = (props: SeekbarProps, ref: Ref<HTMLDivElement>) => {
+    const { initialPos = 0, onPositionChange } = props;
     // const [scope, animate] = useAnimate();
     const scope = useRef<HTMLDivElement | null>(null);
+    const [sliderScope, sliderAnimate] = useAnimate();
     const [parentWidth, setParentWidth] = useState(0);
 
     // const onDrag = () => {
@@ -75,6 +112,21 @@ const Seekbar = (props: SeekbarProps) => {
     //     // eslint-disable-next-line react-hooks/exhaustive-deps
     //   }, [muted, sliderAnimate, sliderScope]);
 
+    const onDrag = () => {
+        onPositionChange?.(sliderScope);
+    };
+
+    useImperativeHandle(
+        ref,
+        () => {
+            return {
+                sliderAnimate,
+                sliderScope,
+            };
+        },
+        [],
+    );
+
     useEffect(() => {
         if (scope.current) {
             setParentWidth(scope.current.clientWidth);
@@ -83,9 +135,23 @@ const Seekbar = (props: SeekbarProps) => {
 
     return (
         <StyledPanelContainer ref={scope}>
-            <Slider initialPos={initialPos} parentWidth={parentWidth} />
+            {/* <Slider initialPos={initialPos} parentWidth={parentWidth} onPositionChange={onPositionChange} />
+             */}
+            <StyledVideoSlider
+                className="volume-slider"
+                drag="x"
+                initial={{
+                    x: initialPos ? initialPos * parentWidth : 0,
+                }}
+                dragConstraints={{ left: 0, right: parentWidth - 10 }} // contraint the slider not till 100% till 100% - 12px of the diameter
+                dragElastic={0}
+                dragMomentum={false}
+                onDrag={onDrag}
+                ref={sliderScope}
+                parentWidth={parentWidth}
+            />
         </StyledPanelContainer>
     );
 };
 
-export default Seekbar;
+export default forwardRef(Seekbar);

@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useContext } from 'react';
+import { Ref, useContext } from 'react';
 import styled from 'styled-components';
 import { PlayerContext } from '../context';
 import PlayButton from './PlayButton';
@@ -19,9 +19,13 @@ const StyledVideoControl = styled(motion.div)<{ isPlaying?: boolean }>`
 const ControlToolbar = () => {
     const { isPlaying } = useContext(PlayerContext);
 
+    const onPositionChange = (sliderRef: Ref<HTMLDivElement>) => {
+        console.log({ sliderRef });
+    };
+
     return (
         <StyledVideoControl className="video-controls" isPlaying={isPlaying}>
-            <Seekbar />
+            <Seekbar onPositionChange={onPositionChange} />
             <PlayButton />
             <VolumeControl />
         </StyledVideoControl>
