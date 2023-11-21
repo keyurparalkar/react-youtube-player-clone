@@ -25,7 +25,7 @@ const ControlToolbar = () => {
 
     return (
         <StyledVideoControl className="video-controls" isPlaying={isPlaying}>
-            <ProgressBar onPositionChange={onPositionChange} />
+            <ProgressBar onPositionChangeByDrag={onPositionChange} />
             <PlayButton />
             <VolumeControl />
         </StyledVideoControl>

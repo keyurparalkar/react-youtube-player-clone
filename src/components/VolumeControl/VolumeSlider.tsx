@@ -1,5 +1,5 @@
 import { useAnimate } from 'framer-motion';
-import { useContext, useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { PlayerContext, PlayerDispatchContext } from '../../context';
 import { VOLUME_CHANGE } from '../../context/actions';
 import ProgressBar from '../common/ProgressBar';
@@ -14,23 +14,36 @@ const VolumeSlider = ({ isHovered }: VolumeSliderProps) => {
     const dispatch = useContext(PlayerDispatchContext);
     const { volume, muted } = useContext(PlayerContext);
 
-    const onPositionChange = () => {
-        if (sliderRef?.current) {
-            const transformStyle = sliderRef.current.style.transform;
-            if (transformStyle !== 'none') {
-                const current = parseFloat(transformStyle.replace(/[^\d.]/g, ''));
-                let newVolume = current / 48;
-                if (newVolume <= 0.03) {
-                    newVolume = 0;
-                }
-                if (newVolume > 1) {
-                    newVolume = 1;
-                }
-                dispatch({
-                    type: VOLUME_CHANGE,
-                    payload: newVolume,
-                });
+    const onPositionChangeByDrag = (e: MouseEvent | TouchEvent | PointerEvent) => {
+        const transformStyle = (e.target as HTMLDivElement)?.style.transform;
+        if (transformStyle !== 'none') {
+            const current = parseFloat(transformStyle.replace(/[^\d.]/g, ''));
+            let newVolume = current / 48;
+            if (newVolume <= 0.03) {
+                newVolume = 0;
             }
+            if (newVolume > 1) {
+                newVolume = 1;
+            }
+            dispatch({
+                type: VOLUME_CHANGE,
+                payload: newVolume,
+            });
+        }
+    };
+
+    const onPositionChangeByClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (sliderRef?.current) {
+            const target = e.target as HTMLDivElement;
+            const rect = target.getBoundingClientRect();
+            const pos = e.pageX - rect.left;
+
+            const newVolume = 1 - Math.abs(pos) / 64;
+            console.log('onClick Happened = ', { pos, newVolume, pageX: e.pageX, rect: rect.left });
+            dispatch({
+                type: VOLUME_CHANGE,
+                payload: newVolume,
+            });
         }
     };
 
@@ -70,11 +83,16 @@ const VolumeSlider = ({ isHovered }: VolumeSliderProps) => {
                 },
             );
         }
-    }, [muted]);
+    }, [muted, volume]);
 
     return (
         <div ref={scope} style={{ width: 64 }}>
-            <ProgressBar initialPos={volume} onPositionChange={onPositionChange} ref={sliderRef} />
+            <ProgressBar
+                initialPos={volume}
+                onPositionChangeByDrag={onPositionChangeByDrag}
+                onPositionChangeByClick={onPositionChangeByClick}
+                ref={sliderRef}
+            />
         </div>
     );
 };
