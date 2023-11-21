@@ -2,7 +2,7 @@ import { useAnimate } from 'framer-motion';
 import { useContext, useEffect } from 'react';
 import { PlayerContext, PlayerDispatchContext } from '../../context';
 import { VOLUME_CHANGE } from '../../context/actions';
-import Seekbar from '../common/ProgressBar';
+import ProgressBar from '../common/ProgressBar';
 
 export type VolumeSliderProps = {
     isHovered: boolean;
@@ -74,7 +74,7 @@ const VolumeSlider = ({ isHovered }: VolumeSliderProps) => {
 
     return (
         <div ref={scope} style={{ width: 64 }}>
-            <Seekbar initialPos={volume} onPositionChange={onPositionChange} ref={sliderRef} />
+            <ProgressBar initialPos={volume} onPositionChange={onPositionChange} ref={sliderRef} />
         </div>
     );
 };

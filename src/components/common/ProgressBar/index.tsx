@@ -50,6 +50,11 @@ const StyledVideoSlider = styled(motion.div)<SliderProps>`
     }
 `;
 
+/**
+ * A resuable components that displays a progressbar with a knob.
+ * SliderRef have access to the knob present on the bar.
+ * With the help of this ref you can do multiple animations on the knob and perform onDrag operations.
+ */
 const ProgressBar = (props: ProgressBarProps, sliderRef: Ref<HTMLDivElement>) => {
     const { initialPos = 0, onPositionChange } = props;
     const scope = useRef<HTMLDivElement | null>(null);
