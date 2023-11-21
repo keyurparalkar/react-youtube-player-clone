@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import MuteButton from './MuteButton';
-import VolumePanel from './VolumePanel';
 import VolumeSlider from './VolumeSlider';
 
 const StyledVolumeControl = styled.div`
@@ -23,7 +22,6 @@ const VolumeControl = () => {
     return (
         <StyledVolumeControl className="volume-control" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
             <MuteButton />
-            {/* <VolumePanel isHovered={isVolumeControlHovered} /> */}
             <VolumeSlider isHovered={isVolumeControlHovered} />
         </StyledVolumeControl>
     );

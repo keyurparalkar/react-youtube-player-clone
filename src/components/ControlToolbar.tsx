@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion';
-import { Ref, useContext } from 'react';
+import { useContext } from 'react';
 import styled from 'styled-components';
 import { PlayerContext } from '../context';
 import PlayButton from './PlayButton';
-import Seekbar from './common/Seekbar';
+import Seekbar from './common/ProgressBar';
 import VolumeControl from './VolumeControl';
 
 const StyledVideoControl = styled(motion.div)<{ isPlaying?: boolean }>`
@@ -19,8 +19,8 @@ const StyledVideoControl = styled(motion.div)<{ isPlaying?: boolean }>`
 const ControlToolbar = () => {
     const { isPlaying } = useContext(PlayerContext);
 
-    const onPositionChange = (sliderRef: Ref<HTMLDivElement>) => {
-        console.log({ sliderRef });
+    const onPositionChange = () => {
+        console.log('Dragging seekbar');
     };
 
     return (

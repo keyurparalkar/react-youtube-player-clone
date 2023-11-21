@@ -1,9 +1,8 @@
-import { motion, useAnimate } from 'framer-motion';
-import { Ref, useContext, useEffect, useRef } from 'react';
-import styled from 'styled-components';
+import { useAnimate } from 'framer-motion';
+import { useContext, useEffect } from 'react';
 import { PlayerContext, PlayerDispatchContext } from '../../context';
 import { VOLUME_CHANGE } from '../../context/actions';
-import Seekbar from '../common/Seekbar';
+import Seekbar from '../common/ProgressBar';
 
 export type VolumeSliderProps = {
     isHovered: boolean;
@@ -11,12 +10,11 @@ export type VolumeSliderProps = {
 
 const VolumeSlider = ({ isHovered }: VolumeSliderProps) => {
     const [scope, animate] = useAnimate();
-    // const [sliderScope, sliderAnimate] = useAnimate();
+    const [sliderRef, sliderAnimate] = useAnimate();
     const dispatch = useContext(PlayerDispatchContext);
-    const sliderKnobRef = useRef<HTMLDivElement>(null);
     const { volume, muted } = useContext(PlayerContext);
 
-    const onPositionChange = (sliderRef: Ref<HTMLDivElement>) => {
+    const onPositionChange = () => {
         if (sliderRef?.current) {
             const transformStyle = sliderRef.current.style.transform;
             if (transformStyle !== 'none') {
@@ -60,10 +58,9 @@ const VolumeSlider = ({ isHovered }: VolumeSliderProps) => {
     }, [isHovered, animate, scope]);
 
     useEffect(() => {
-        if (sliderKnobRef.current) {
-            const { sliderScope, sliderAnimate } = sliderKnobRef.current;
+        if (sliderRef.current) {
             sliderAnimate(
-                sliderScope.current,
+                sliderRef.current,
                 {
                     x: muted ? 0 : volume * 48,
                 },
@@ -77,7 +74,7 @@ const VolumeSlider = ({ isHovered }: VolumeSliderProps) => {
 
     return (
         <div ref={scope} style={{ width: 64 }}>
-            <Seekbar initialPos={volume} onPositionChange={onPositionChange} ref={sliderKnobRef} />
+            <Seekbar initialPos={volume} onPositionChange={onPositionChange} ref={sliderRef} />
         </div>
     );
 };
