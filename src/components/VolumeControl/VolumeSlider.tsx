@@ -32,14 +32,12 @@ const VolumeSlider = ({ isHovered }: VolumeSliderProps) => {
         }
     };
 
-    const onPositionChangeByClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const onPositionChangeByClick = (e: React.MouseEvent<HTMLDivElement>, parentLeft: number) => {
         if (sliderRef?.current) {
-            const target = e.target as HTMLDivElement;
-            const rect = target.getBoundingClientRect();
-            const pos = e.pageX - rect.left;
+            const pos = e.pageX - parentLeft;
 
-            const newVolume = 1 - Math.abs(pos) / 64;
-            console.log('onClick Happened = ', { pos, newVolume, pageX: e.pageX, rect: rect.left });
+            const newVolume = Math.abs(pos) / 64;
+            // console.log('onClick Happened = ', { pos, newVolume, pageX: e.pageX, rect: rect.left });
             dispatch({
                 type: VOLUME_CHANGE,
                 payload: newVolume,

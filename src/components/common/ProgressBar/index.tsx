@@ -5,7 +5,7 @@ import styled from 'styled-components';
 export type ProgressBarProps = {
     initialPos?: number;
     onPositionChangeByDrag?: (e: MouseEvent | TouchEvent | PointerEvent) => void;
-    onPositionChangeByClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
+    onPositionChangeByClick?: (e: React.MouseEvent<HTMLDivElement>, parentLeft: number) => void;
 };
 
 type SliderProps = {
@@ -66,7 +66,10 @@ const ProgressBar = (props: ProgressBarProps, sliderRef: Ref<HTMLDivElement>) =>
     };
 
     const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        onPositionChangeByClick?.(e);
+        if (scope.current) {
+            const rect = scope.current.getBoundingClientRect();
+            onPositionChangeByClick?.(e, rect.left);
+        }
     };
 
     useEffect(() => {
