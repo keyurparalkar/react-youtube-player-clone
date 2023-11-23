@@ -1,5 +1,12 @@
 import { ActionProps, StateProps } from '.';
-import { HAS_VIDEO_LOADED, ON_MUTE, PLAY_PAUSE, UPDATE_VIDEO_CURRENT_TIME, VOLUME_CHANGE } from './actions';
+import {
+    HAS_VIDEO_LOADED,
+    HAS_VIDEO_SEEKED,
+    ON_MUTE,
+    PLAY_PAUSE,
+    UPDATE_VIDEO_CURRENT_TIME,
+    VOLUME_CHANGE,
+} from './actions';
 
 export const playerReducer = (state: StateProps, action: ActionProps) => {
     switch (action.type) {
@@ -28,6 +35,7 @@ export const playerReducer = (state: StateProps, action: ActionProps) => {
             return {
                 ...state,
                 hasVideoLoaded: action.payload,
+                totalDuration: action.payload.totalDuration,
             };
         }
 
@@ -35,7 +43,13 @@ export const playerReducer = (state: StateProps, action: ActionProps) => {
             return {
                 ...state,
                 currentTime: action.payload.currentTime,
-                totalDuration: action.payload.totalDuration,
+            };
+        }
+
+        case HAS_VIDEO_SEEKED: {
+            return {
+                ...state,
+                hasSeeked: action.payload,
             };
         }
 

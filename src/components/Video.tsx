@@ -4,7 +4,7 @@ import { HAS_VIDEO_LOADED, PLAY_PAUSE, UPDATE_VIDEO_CURRENT_TIME } from '../cont
 
 const Video = () => {
     const videoRef = useRef<HTMLVideoElement>(null);
-    const { isPlaying, muted, volume } = useContext(PlayerContext);
+    const { isPlaying, muted, volume, currentTime, hasSeeked } = useContext(PlayerContext);
     const dispatch = useContext(PlayerDispatchContext);
 
     const onPlayPause = () => {
@@ -12,12 +12,11 @@ const Video = () => {
     };
 
     const handleTimeUpdate = () => {
-        if (videoRef.current) {
+        if (videoRef.current && !hasSeeked) {
             dispatch({
                 type: UPDATE_VIDEO_CURRENT_TIME,
                 payload: {
                     currentTime: videoRef.current.currentTime,
-                    totalDuration: videoRef.current.duration,
                 },
             });
         }
@@ -47,10 +46,22 @@ const Video = () => {
     }, [volume]);
 
     useEffect(() => {
+        if (videoRef.current) {
+            videoRef.current.currentTime = currentTime;
+        }
+    }, [hasSeeked]);
+
+    useEffect(() => {
         const video = videoRef.current;
         if (video) {
             video.addEventListener('loadeddata', () => {
-                dispatch({ type: HAS_VIDEO_LOADED, payload: true });
+                dispatch({
+                    type: HAS_VIDEO_LOADED,
+                    payload: {
+                        hasVideoLoaded: true,
+                        totalDuration: video.duration,
+                    },
+                });
             });
         }
 

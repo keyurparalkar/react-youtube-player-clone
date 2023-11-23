@@ -8,6 +8,7 @@ export type StateProps = {
     hasVideoLoaded: boolean;
     totalDuration: number;
     currentTime: number;
+    hasSeeked: boolean;
 };
 
 export type ActionProps = {
@@ -20,13 +21,14 @@ type PlayerProviderProps = {
     children?: ReactElement;
 };
 
-export const initialState = {
+export const initialState: StateProps = {
     isPlaying: false,
     muted: false,
     volume: 1,
     hasVideoLoaded: false,
     totalDuration: 0,
     currentTime: 0,
+    hasSeeked: false,
 };
 
 export const PlayerContext = createContext<StateProps>(initialState);

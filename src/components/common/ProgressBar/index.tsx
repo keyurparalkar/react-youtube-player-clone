@@ -6,6 +6,7 @@ export type ProgressBarProps = {
     initialPos?: number;
     onPositionChangeByDrag?: (e: MouseEvent | TouchEvent | PointerEvent) => void;
     onPositionChangeByClick?: (e: React.MouseEvent<HTMLDivElement>, parentLeft: number) => void;
+    onDragEnd?: () => void;
 };
 
 type SliderProps = {
@@ -57,7 +58,7 @@ const StyledVideoSlider = styled(motion.div)<SliderProps>`
  * With the help of this ref you can do multiple animations on the knob and perform onDrag operations.
  */
 const ProgressBar = (props: ProgressBarProps, sliderRef: Ref<HTMLDivElement>) => {
-    const { initialPos = 0, onPositionChangeByDrag, onPositionChangeByClick } = props;
+    const { initialPos = 0, onPositionChangeByDrag, onPositionChangeByClick, onDragEnd } = props;
     const scope = useRef<HTMLDivElement | null>(null);
     const [parentWidth, setParentWidth] = useState(0);
 
@@ -90,6 +91,7 @@ const ProgressBar = (props: ProgressBarProps, sliderRef: Ref<HTMLDivElement>) =>
                 dragElastic={0}
                 dragMomentum={false}
                 onDrag={handleDrag}
+                onDragEnd={onDragEnd}
                 onClick={handleClick}
                 ref={sliderRef}
                 parentWidth={parentWidth}
