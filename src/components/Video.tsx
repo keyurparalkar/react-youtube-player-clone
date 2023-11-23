@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef } from 'react';
 import { PlayerContext, PlayerDispatchContext } from '../context';
-import { HAS_VIDEO_LOADED, PLAY_PAUSE } from '../context/actions';
+import { HAS_VIDEO_LOADED, PLAY_PAUSE, UPDATE_VIDEO_CURRENT_TIME } from '../context/actions';
 
 const Video = () => {
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -9,6 +9,18 @@ const Video = () => {
 
     const onPlayPause = () => {
         dispatch({ type: PLAY_PAUSE, payload: !isPlaying });
+    };
+
+    const handleTimeUpdate = () => {
+        if (videoRef.current) {
+            dispatch({
+                type: UPDATE_VIDEO_CURRENT_TIME,
+                payload: {
+                    currentTime: videoRef.current.currentTime,
+                    totalDuration: videoRef.current.duration,
+                },
+            });
+        }
     };
 
     useEffect(() => {
@@ -53,6 +65,7 @@ const Video = () => {
     return (
         <div onClick={onPlayPause} className="html-video-container">
             <video
+                onTimeUpdate={handleTimeUpdate}
                 ref={videoRef}
                 src="http://iandevlin.github.io/mdn/video-player/video/tears-of-steel-battle-clip-medium.mp4"
             />

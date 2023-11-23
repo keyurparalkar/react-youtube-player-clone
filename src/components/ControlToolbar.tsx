@@ -3,8 +3,8 @@ import { useContext } from 'react';
 import styled from 'styled-components';
 import { PlayerContext } from '../context';
 import PlayButton from './PlayButton';
-import ProgressBar from './common/ProgressBar';
 import VolumeControl from './VolumeControl';
+import Seekbar from './Seekbar';
 
 const StyledVideoControl = styled(motion.div)<{ isPlaying?: boolean }>`
     position: absolute;
@@ -19,13 +19,9 @@ const StyledVideoControl = styled(motion.div)<{ isPlaying?: boolean }>`
 const ControlToolbar = () => {
     const { isPlaying } = useContext(PlayerContext);
 
-    const onPositionChange = () => {
-        console.log('Dragging ProgressBar');
-    };
-
     return (
         <StyledVideoControl className="video-controls" isPlaying={isPlaying}>
-            <ProgressBar onPositionChangeByDrag={onPositionChange} />
+            <Seekbar />
             <PlayButton />
             <VolumeControl />
         </StyledVideoControl>
