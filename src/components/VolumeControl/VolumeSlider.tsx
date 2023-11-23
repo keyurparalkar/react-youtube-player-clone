@@ -16,7 +16,7 @@ const VolumeSlider = ({ isHovered }: VolumeSliderProps) => {
 
     const onPositionChangeByDrag = (e: MouseEvent | TouchEvent | PointerEvent) => {
         const transformStyle = (e.target as HTMLDivElement)?.style.transform;
-        if (transformStyle !== 'none') {
+        if (transformStyle && transformStyle !== 'none') {
             const current = parseFloat(transformStyle.replace(/[^\d.]/g, ''));
             let newVolume = current / 48;
             if (newVolume <= 0.03) {
@@ -84,7 +84,7 @@ const VolumeSlider = ({ isHovered }: VolumeSliderProps) => {
     }, [muted, volume]);
 
     return (
-        <div ref={scope} style={{ width: 64 }}>
+        <div ref={scope} style={{ width: 60 }}>
             <ProgressBar
                 initialPos={volume}
                 onPositionChangeByDrag={onPositionChangeByDrag}

@@ -86,7 +86,7 @@ const ProgressBar = (props: ProgressBarProps, sliderRef: Ref<HTMLDivElement>) =>
                 initial={{
                     x: initialPos ? initialPos * parentWidth : 0,
                 }}
-                dragConstraints={{ left: 0, right: parentWidth - 10 }} // contraint the slider not till 100% till 100% - 12px of the diameter
+                dragConstraints={{ left: 0, right: parentWidth - 12 }} // contraint the slider not till 100% till 100% - 12px of the diameter
                 dragElastic={0}
                 dragMomentum={false}
                 onDrag={handleDrag}
