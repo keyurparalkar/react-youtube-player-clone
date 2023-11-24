@@ -9,17 +9,13 @@ const Seekbar = () => {
     const dispatch = useContext(PlayerDispatchContext);
     const [sliderRef, sliderAnimate] = useAnimate();
 
-    const onPositionChangeByDrag = (e: MouseEvent | TouchEvent | PointerEvent) => {
-        /**
-         * When I am dragging I need the current left position and need to way to update the currentTime of the video
-         *
-         */
+    const completedTime = currentTime / totalDuration || 0;
 
+    const onPositionChangeByDrag = (e: MouseEvent | TouchEvent | PointerEvent) => {
         const transformStyle = (e.target as HTMLDivElement)?.style.transform;
         if (transformStyle && transformStyle !== 'none') {
             const current = parseFloat(transformStyle.replace(/[^\d.]/g, ''));
             const currentTime = (current * totalDuration) / 800;
-            console.log('Current Time on drag = ', { currentTime });
 
             dispatch({
                 type: UPDATE_VIDEO_CURRENT_TIME,
@@ -40,7 +36,34 @@ const Seekbar = () => {
         });
     };
 
-    const completedTime = currentTime / totalDuration || 0;
+    const onPositionChangeByClick = (e: React.MouseEvent<HTMLDivElement>, parentLeft: number) => {
+        const pos = e.pageX - parentLeft;
+
+        const newCurrentTime = (Math.abs(pos) * totalDuration) / 800;
+
+        dispatch({
+            type: UPDATE_VIDEO_CURRENT_TIME,
+            payload: { currentTime: newCurrentTime },
+        });
+
+        /**
+         * We make the hasSeeked false when the click is complete
+         * Click is completed when Mouse button moves down and then up.
+         * Click event handlers are executed as follows:
+         * onMouseDown -> onMouseUp -> onClick
+         */
+        dispatch({
+            type: HAS_VIDEO_SEEKED,
+            payload: false,
+        });
+    };
+
+    const onMouseDown = () => {
+        dispatch({
+            type: HAS_VIDEO_SEEKED,
+            payload: true,
+        });
+    };
 
     useEffect(() => {
         if (sliderRef.current) {
@@ -63,6 +86,8 @@ const Seekbar = () => {
                 initialPos={completedTime}
                 onDragEnd={onDragEnd}
                 onPositionChangeByDrag={onPositionChangeByDrag}
+                onPositionChangeByClick={onPositionChangeByClick}
+                onMouseDown={onMouseDown}
                 ref={sliderRef}
             />
         </div>

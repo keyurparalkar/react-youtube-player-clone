@@ -7,6 +7,7 @@ export type ProgressBarProps = {
     onPositionChangeByDrag?: (e: MouseEvent | TouchEvent | PointerEvent) => void;
     onPositionChangeByClick?: (e: React.MouseEvent<HTMLDivElement>, parentLeft: number) => void;
     onDragEnd?: () => void;
+    onMouseDown?: () => void;
 };
 
 type SliderProps = {
@@ -55,16 +56,12 @@ const StyledVideoSlider = styled(motion.div)<SliderProps>`
 /**
  * A resuable components that displays a progressbar with a knob.
  * SliderRef have access to the knob present on the bar.
- * With the help of this ref you can do multiple animations on the knob and perform onDrag operations.
+ * With the help of this ref you can do multiple animations on the knob from the parent component.
  */
 const ProgressBar = (props: ProgressBarProps, sliderRef: Ref<HTMLDivElement>) => {
-    const { initialPos = 0, onPositionChangeByDrag, onPositionChangeByClick, onDragEnd } = props;
+    const { initialPos = 0, onPositionChangeByDrag, onPositionChangeByClick, onDragEnd, onMouseDown } = props;
     const scope = useRef<HTMLDivElement | null>(null);
     const [parentWidth, setParentWidth] = useState(0);
-
-    const handleDrag = (e: MouseEvent | TouchEvent | PointerEvent) => {
-        onPositionChangeByDrag?.(e);
-    };
 
     const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
         if (scope.current) {
@@ -90,8 +87,9 @@ const ProgressBar = (props: ProgressBarProps, sliderRef: Ref<HTMLDivElement>) =>
                 dragConstraints={{ left: 0, right: parentWidth - 12 }} // contraint the slider not till 100% till 100% - 12px of the diameter
                 dragElastic={0}
                 dragMomentum={false}
-                onDrag={handleDrag}
+                onDrag={onPositionChangeByDrag}
                 onDragEnd={onDragEnd}
+                onMouseDown={onMouseDown}
                 onClick={handleClick}
                 ref={sliderRef}
                 parentWidth={parentWidth}

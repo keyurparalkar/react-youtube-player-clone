@@ -74,13 +74,32 @@ const Video = () => {
     }, []);
 
     return (
-        <div onClick={onPlayPause} className="html-video-container">
-            <video
-                onTimeUpdate={handleTimeUpdate}
-                ref={videoRef}
-                src="http://iandevlin.github.io/mdn/video-player/video/tears-of-steel-battle-clip-medium.mp4"
-            />
-        </div>
+        <>
+            <div onClick={onPlayPause} className="html-video-container">
+                <video
+                    onTimeUpdate={handleTimeUpdate}
+                    ref={videoRef}
+                    src="http://iandevlin.github.io/mdn/video-player/video/tears-of-steel-battle-clip-medium.mp4"
+                />
+            </div>
+            <code style={{ position: 'absolute' }}>
+                {JSON.stringify(
+                    {
+                        isPlaying,
+                        volume,
+                        muted,
+                        currentTime: currentTime,
+                        duration: videoRef.current ? videoRef.current.duration : 0,
+                        // percentageCompleted: videoRef.current
+                        //     ? (videoRef.current.currentTime / videoRef.current.duration) * 100
+                        //     : 0,
+                        hasSeeked,
+                    },
+                    null,
+                    2,
+                )}
+            </code>
+        </>
     );
 };
 

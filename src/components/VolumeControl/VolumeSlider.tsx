@@ -37,7 +37,6 @@ const VolumeSlider = ({ isHovered }: VolumeSliderProps) => {
             const pos = e.pageX - parentLeft;
 
             const newVolume = Math.abs(pos) / 64;
-            // console.log('onClick Happened = ', { pos, newVolume, pageX: e.pageX, rect: rect.left });
             dispatch({
                 type: VOLUME_CHANGE,
                 payload: newVolume,
