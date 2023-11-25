@@ -3,6 +3,7 @@ import { HiMiniPlay, HiMiniPause } from 'react-icons/hi2';
 import { PlayerContext, PlayerDispatchContext } from '../context';
 import { PLAY_PAUSE } from '../context/actions';
 import { StyledIconButton } from '../utils';
+import Tooltip from './common/Tooltip';
 
 const PlayButton = () => {
     const { isPlaying } = useContext(PlayerContext);
@@ -12,9 +13,11 @@ const PlayButton = () => {
     };
 
     return (
-        <StyledIconButton onClick={onPlayPause}>
-            {isPlaying ? <HiMiniPause size="25px" /> : <HiMiniPlay size="25px" />}
-        </StyledIconButton>
+        <Tooltip content="Play/Pause">
+            <StyledIconButton onClick={onPlayPause}>
+                {isPlaying ? <HiMiniPause size="25px" /> : <HiMiniPlay size="25px" />}
+            </StyledIconButton>
+        </Tooltip>
     );
 };
 
