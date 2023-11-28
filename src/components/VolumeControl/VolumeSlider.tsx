@@ -3,6 +3,7 @@ import React, { useContext, useEffect } from 'react';
 import { PlayerContext, PlayerDispatchContext } from '../../context';
 import { VOLUME_CHANGE } from '../../context/actions';
 import ProgressBar from '../common/ProgressBar';
+import Tooltip from '../common/Tooltip';
 
 export type VolumeSliderProps = {
     isHovered: boolean;
@@ -83,14 +84,16 @@ const VolumeSlider = ({ isHovered }: VolumeSliderProps) => {
     }, [muted, volume]);
 
     return (
-        <div ref={scope} style={{ width: 60 }}>
-            <ProgressBar
-                initialPos={volume}
-                onPositionChangeByDrag={onPositionChangeByDrag}
-                onPositionChangeByClick={onPositionChangeByClick}
-                ref={sliderRef}
-            />
-        </div>
+        <Tooltip content="Volume">
+            <div ref={scope} style={{ width: 60 }}>
+                <ProgressBar
+                    initialPos={volume}
+                    onPositionChangeByDrag={onPositionChangeByDrag}
+                    onPositionChangeByClick={onPositionChangeByClick}
+                    ref={sliderRef}
+                />
+            </div>
+        </Tooltip>
     );
 };
 

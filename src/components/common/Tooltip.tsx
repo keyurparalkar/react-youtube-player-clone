@@ -3,7 +3,7 @@ import { ReactElement, useState } from 'react';
 import styled from 'styled-components';
 
 type TooltipProps = {
-    content?: string | ReactElement;
+    content: string | ReactElement;
     children?: ReactElement;
 };
 
