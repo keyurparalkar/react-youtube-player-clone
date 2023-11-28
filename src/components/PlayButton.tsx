@@ -13,7 +13,7 @@ const PlayButton = () => {
     };
 
     return (
-        <Tooltip content="Play/Pause">
+        <Tooltip content={isPlaying ? 'Pause' : 'Play'}>
             <StyledIconButton onClick={onPlayPause}>
                 {isPlaying ? <HiMiniPause size="25px" /> : <HiMiniPlay size="25px" />}
             </StyledIconButton>
