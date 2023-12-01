@@ -3,6 +3,8 @@ import { useContext, useEffect } from 'react';
 import { PlayerContext, PlayerDispatchContext } from '../../context';
 import { HAS_VIDEO_SEEKED, UPDATE_VIDEO_CURRENT_TIME } from '../../context/actions';
 import ProgressBar from '../common/ProgressBar';
+import Tooltip from '../common/Tooltip';
+import FrameTooltip from './FrameTooltip';
 
 const Seekbar = () => {
     const { currentTime, totalDuration } = useContext(PlayerContext);
@@ -82,14 +84,16 @@ const Seekbar = () => {
 
     return (
         <div style={{ width: 800 }}>
-            <ProgressBar
-                initialPos={completedTime}
-                onDragEnd={onDragEnd}
-                onPositionChangeByDrag={onPositionChangeByDrag}
-                onPositionChangeByClick={onPositionChangeByClick}
-                onMouseDown={onMouseDown}
-                ref={sliderRef}
-            />
+            <Tooltip content={<FrameTooltip />} movingTooltip>
+                <ProgressBar
+                    initialPos={completedTime}
+                    onDragEnd={onDragEnd}
+                    onPositionChangeByDrag={onPositionChangeByDrag}
+                    onPositionChangeByClick={onPositionChangeByClick}
+                    onMouseDown={onMouseDown}
+                    ref={sliderRef}
+                />
+            </Tooltip>
         </div>
     );
 };

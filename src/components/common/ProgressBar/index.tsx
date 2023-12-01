@@ -79,7 +79,6 @@ const ProgressBar = (props: ProgressBarProps, sliderRef: Ref<HTMLDivElement>) =>
     return (
         <StyledPanelContainer ref={scope}>
             <StyledVideoSlider
-                className="volume-slider"
                 drag="x"
                 initial={{
                     x: initialPos ? initialPos * parentWidth : 0,

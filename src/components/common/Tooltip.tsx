@@ -1,9 +1,19 @@
-import { autoUpdate, flip, offset, shift, useFloating, useHover, useInteractions } from '@floating-ui/react';
-import { ReactElement, useState } from 'react';
+import {
+    autoUpdate,
+    flip,
+    offset,
+    shift,
+    useClientPoint,
+    useFloating,
+    useHover,
+    useInteractions,
+} from '@floating-ui/react';
+import { forwardRef, ReactElement, useState } from 'react';
 import styled from 'styled-components';
 
 type TooltipProps = {
     content: string | ReactElement;
+    movingTooltip?: boolean;
     children?: ReactElement;
 };
 
@@ -17,7 +27,7 @@ const StyledTooltip = styled.div`
 `;
 
 const Tooltip = (props: TooltipProps) => {
-    const { children, content } = props;
+    const { children, content, movingTooltip = false } = props;
     const [isOpen, setIsOpen] = useState(false);
 
     const { refs, floatingStyles, context } = useFloating({
@@ -35,8 +45,12 @@ const Tooltip = (props: TooltipProps) => {
     });
 
     const hover = useHover(context, { move: false });
+    const clientPoint = useClientPoint(context, {
+        enabled: movingTooltip,
+        axis: 'x',
+    });
 
-    const { getReferenceProps, getFloatingProps } = useInteractions([hover]);
+    const { getReferenceProps, getFloatingProps } = useInteractions([hover, clientPoint]);
 
     return (
         <>
@@ -53,4 +67,4 @@ const Tooltip = (props: TooltipProps) => {
     );
 };
 
-export default Tooltip;
+export default forwardRef(Tooltip);
