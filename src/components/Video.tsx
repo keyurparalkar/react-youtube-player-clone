@@ -22,6 +22,10 @@ const Video = () => {
         }
     };
 
+    const onCueChange = (e: any) => {
+        console.log({ e });
+    };
+
     useEffect(() => {
         if (videoRef.current) {
             const video = videoRef.current;
@@ -80,7 +84,14 @@ const Video = () => {
                     onTimeUpdate={handleTimeUpdate}
                     ref={videoRef}
                     src="http://iandevlin.github.io/mdn/video-player/video/tears-of-steel-battle-clip-medium.mp4"
-                />
+                >
+                    <track
+                        default
+                        kind="metadata"
+                        src="/Users/keyurparalkar/Documents/Projects/youtube-player-clone/open_video.vtt"
+                        onChange={onCueChange}
+                    />
+                </video>
             </div>
             <code style={{ position: 'absolute' }}>
                 {JSON.stringify(
