@@ -7,7 +7,7 @@ import Tooltip from '../common/Tooltip';
 import FrameTooltip from './FrameTooltip';
 
 const Seekbar = () => {
-    const { currentTime, totalDuration } = useContext(PlayerContext);
+    const { currentTime, totalDuration, hoveredDuration, hoveredThumbnailUrl } = useContext(PlayerContext);
     const dispatch = useContext(PlayerDispatchContext);
     const [sliderRef, sliderAnimate] = useAnimate();
 
@@ -84,7 +84,10 @@ const Seekbar = () => {
 
     return (
         <div style={{ width: 800 }}>
-            <Tooltip content={<FrameTooltip />} movingTooltip>
+            <Tooltip
+                content={<FrameTooltip duration={hoveredDuration} thumbnailUrl={hoveredThumbnailUrl} />}
+                movingTooltip
+            >
                 <ProgressBar
                     initialPos={completedTime}
                     onDragEnd={onDragEnd}
