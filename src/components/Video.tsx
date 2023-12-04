@@ -2,8 +2,13 @@ import { useContext, useEffect, useRef } from 'react';
 import { PlayerContext, PlayerDispatchContext } from '../context';
 import { HAS_VIDEO_LOADED, PLAY_PAUSE, UPDATE_VIDEO_CURRENT_TIME } from '../context/actions';
 
+// Importing files locally
+import myvideo from '../assets/videos/myvideo.mp4';
+import thumbnailVtt from '../assets/videos/myvideo.vtt';
+
 const Video = () => {
     const videoRef = useRef<HTMLVideoElement>(null);
+    const trackRef = useRef<HTMLTrackElement>(null);
     const { isPlaying, muted, volume, currentTime, hasSeeked } = useContext(PlayerContext);
     const dispatch = useContext(PlayerDispatchContext);
 
@@ -22,9 +27,9 @@ const Video = () => {
         }
     };
 
-    const onCueChange = (e: any) => {
-        console.log({ e });
-    };
+    // const onCueChange = (e: any) => {
+    //     console.log({ e });
+    // };
 
     useEffect(() => {
         if (videoRef.current) {
@@ -57,6 +62,8 @@ const Video = () => {
 
     useEffect(() => {
         const video = videoRef.current;
+        // const track = trackRef.current;
+
         if (video) {
             video.addEventListener('loadeddata', () => {
                 dispatch({
@@ -69,6 +76,12 @@ const Video = () => {
             });
         }
 
+        // if (track) {
+        //     track.addEventListener('cuechange', (e) => {
+        //         console.log({ e });
+        //     });
+        // }
+
         return () => {
             video &&
                 video.removeEventListener('loadeddata', () => {
@@ -80,17 +93,10 @@ const Video = () => {
     return (
         <>
             <div onClick={onPlayPause} className="html-video-container">
-                <video
-                    onTimeUpdate={handleTimeUpdate}
-                    ref={videoRef}
-                    src="http://iandevlin.github.io/mdn/video-player/video/tears-of-steel-battle-clip-medium.mp4"
-                >
-                    <track
-                        default
-                        kind="metadata"
-                        src="/Users/keyurparalkar/Documents/Projects/youtube-player-clone/open_video.vtt"
-                        onChange={onCueChange}
-                    />
+                <video onTimeUpdate={handleTimeUpdate} ref={videoRef}>
+                    <source src={myvideo} type="video/mp4" />
+                    <track ref={trackRef} default kind="subtitles" src={thumbnailVtt} />
+                    test
                 </video>
             </div>
             <code style={{ position: 'absolute' }}>

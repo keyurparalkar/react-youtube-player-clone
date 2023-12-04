@@ -8,7 +8,7 @@ import {
     useHover,
     useInteractions,
 } from '@floating-ui/react';
-import { forwardRef, ReactElement, useState } from 'react';
+import { ReactElement, useState } from 'react';
 import styled from 'styled-components';
 
 type TooltipProps = {
@@ -67,4 +67,4 @@ const Tooltip = (props: TooltipProps) => {
     );
 };
 
-export default forwardRef(Tooltip);
+export default Tooltip;
