@@ -1,14 +1,18 @@
 import { createContext, Dispatch, ReactElement, Reducer, useReducer } from 'react';
 import { playerReducer } from './reducers';
 
+export type Duration = number;
+
 export type StateProps = {
     isPlaying: boolean;
     muted: boolean;
     volume: number;
     hasVideoLoaded: boolean;
-    totalDuration: number;
-    currentTime: number;
+    totalDuration: Duration;
+    currentTime: Duration;
     hasSeeked: boolean;
+    hoveredDuration: Duration;
+    hoveredThumbnailUrl: string;
 };
 
 export type ActionProps = {
@@ -29,6 +33,8 @@ export const initialState: StateProps = {
     totalDuration: 0,
     currentTime: 0,
     hasSeeked: false,
+    hoveredDuration: 0,
+    hoveredThumbnailUrl: '',
 };
 
 export const PlayerContext = createContext<StateProps>(initialState);

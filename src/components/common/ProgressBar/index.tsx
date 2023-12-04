@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion';
-import { forwardRef, Ref, useEffect, useRef, useState } from 'react';
+import { forwardRef, Ref, useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import { PlayerDispatchContext } from '../../../context';
+import { UPDATE_HOVERED_DURATION } from '../../../context/actions';
 
 export type ProgressBarProps = {
     initialPos?: number;
@@ -60,6 +62,7 @@ const StyledVideoSlider = styled(motion.div)<SliderProps>`
  */
 const ProgressBar = (props: ProgressBarProps, sliderRef: Ref<HTMLDivElement>) => {
     const { initialPos = 0, onPositionChangeByDrag, onPositionChangeByClick, onDragEnd, onMouseDown } = props;
+    const dispatch = useContext(PlayerDispatchContext);
     const scope = useRef<HTMLDivElement | null>(null);
     const [parentWidth, setParentWidth] = useState(0);
 
@@ -77,7 +80,19 @@ const ProgressBar = (props: ProgressBarProps, sliderRef: Ref<HTMLDivElement>) =>
     }, []);
 
     return (
-        <StyledPanelContainer ref={scope}>
+        <StyledPanelContainer
+            ref={scope}
+            // TODO(keyur): Move this to seekbar component
+            onMouseMove={(e: React.MouseEvent<HTMLDivElement>) => {
+                if (scope.current) {
+                    const rect = scope.current.getBoundingClientRect();
+                    const pos = e.pageX - rect.left;
+
+                    const newCurrentTime = (Math.abs(pos) * 70.1) / 800;
+                    dispatch({ type: UPDATE_HOVERED_DURATION, payload: newCurrentTime });
+                }
+            }}
+        >
             <StyledVideoSlider
                 drag="x"
                 initial={{

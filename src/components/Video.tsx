@@ -1,6 +1,11 @@
 import { useContext, useEffect, useRef } from 'react';
 import { PlayerContext, PlayerDispatchContext } from '../context';
-import { HAS_VIDEO_LOADED, PLAY_PAUSE, UPDATE_VIDEO_CURRENT_TIME } from '../context/actions';
+import {
+    HAS_VIDEO_LOADED,
+    PLAY_PAUSE,
+    UPDATE_HOVERED_THUMBNAIL_URL,
+    UPDATE_VIDEO_CURRENT_TIME,
+} from '../context/actions';
 
 // Importing files locally
 import myvideo from '../assets/videos/myvideo.mp4';
@@ -9,7 +14,8 @@ import thumbnailVtt from '../assets/videos/myvideo.vtt';
 const Video = () => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const trackRef = useRef<HTMLTrackElement>(null);
-    const { isPlaying, muted, volume, currentTime, hasSeeked } = useContext(PlayerContext);
+    const { isPlaying, muted, volume, currentTime, hasSeeked, hoveredDuration, hoveredThumbnailUrl } =
+        useContext(PlayerContext);
     const dispatch = useContext(PlayerDispatchContext);
 
     const onPlayPause = () => {
@@ -61,8 +67,32 @@ const Video = () => {
     }, [hasSeeked]);
 
     useEffect(() => {
+        // TODO(Keyur): Make this effect efficient by throttling or debounce
+        // Update the thumbnailURL when hovered duration is changed
+        if (trackRef.current) {
+            const { track } = trackRef.current;
+
+            /**
+             * Algo:
+             * 1. Get all cues
+             * 2. Convert HoveredDuration to integer
+             * 3. Index to the specifc cue like this: cue[integerDuration]
+             * 4. Get the cue's text property
+             * 5. Store it in the Global state;
+             */
+
+            const allCues = track.cues;
+            const truncatedDuration = Math.trunc(hoveredDuration);
+            const currentCue = allCues?.[truncatedDuration];
+            if (currentCue) {
+                const { text } = currentCue as VTTCue;
+                dispatch({ type: UPDATE_HOVERED_THUMBNAIL_URL, payload: text });
+            }
+        }
+    }, [hoveredDuration]);
+
+    useEffect(() => {
         const video = videoRef.current;
-        // const track = trackRef.current;
 
         if (video) {
             video.addEventListener('loadeddata', () => {
@@ -75,12 +105,6 @@ const Video = () => {
                 });
             });
         }
-
-        // if (track) {
-        //     track.addEventListener('cuechange', (e) => {
-        //         console.log({ e });
-        //     });
-        // }
 
         return () => {
             video &&
@@ -95,7 +119,7 @@ const Video = () => {
             <div onClick={onPlayPause} className="html-video-container">
                 <video onTimeUpdate={handleTimeUpdate} ref={videoRef}>
                     <source src={myvideo} type="video/mp4" />
-                    <track ref={trackRef} default kind="subtitles" src={thumbnailVtt} />
+                    <track ref={trackRef} default kind="metadata" src={thumbnailVtt} />
                     test
                 </video>
             </div>
@@ -111,6 +135,8 @@ const Video = () => {
                         //     ? (videoRef.current.currentTime / videoRef.current.duration) * 100
                         //     : 0,
                         hasSeeked,
+                        hoveredDuration,
+                        hoveredThumbnailUrl,
                     },
                     null,
                     2,

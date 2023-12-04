@@ -4,6 +4,8 @@ import {
     HAS_VIDEO_SEEKED,
     ON_MUTE,
     PLAY_PAUSE,
+    UPDATE_HOVERED_DURATION,
+    UPDATE_HOVERED_THUMBNAIL_URL,
     UPDATE_VIDEO_CURRENT_TIME,
     VOLUME_CHANGE,
 } from './actions';
@@ -50,6 +52,20 @@ export const playerReducer = (state: StateProps, action: ActionProps) => {
             return {
                 ...state,
                 hasSeeked: action.payload,
+            };
+        }
+
+        case UPDATE_HOVERED_DURATION: {
+            return {
+                ...state,
+                hoveredDuration: action.payload,
+            };
+        }
+
+        case UPDATE_HOVERED_THUMBNAIL_URL: {
+            return {
+                ...state,
+                hoveredThumbnailUrl: action.payload,
             };
         }
 
