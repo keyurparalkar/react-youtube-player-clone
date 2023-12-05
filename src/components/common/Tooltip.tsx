@@ -22,7 +22,7 @@ const StyledTooltip = styled.div`
     background-color: rgba(28, 28, 28, 0.9);
     color: white;
     border-radius: 4px;
-    padding: 5px 9px;
+    padding: 1px 1px 10px 2px;
     font-size: 0.8rem;
 `;
 

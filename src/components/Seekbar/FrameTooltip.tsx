@@ -1,17 +1,55 @@
+import styled from 'styled-components';
 import { Duration } from '../../context';
+// TODO: Add batched stripes dynamically
+// TODO: move the .vtt and the video to a remote location
+import myImage from '../../assets/videos/tears-of-steel-battle-clip-medium_sprite.jpg';
 
 type FrameTooltipProps = {
     duration: Duration;
     thumbnailUrl: string;
 };
 
+type ImageProps = {
+    imageUrl: string;
+    width?: string;
+    height?: string;
+    offsetX: string;
+    offsetY: string;
+};
+
+const StyledSnapshotContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+`;
+
+const StyledImage = styled.img<ImageProps>`
+    display: inline-block;
+    background: url(${(props) => props.imageUrl}) -${(props) => props.offsetX}px -${(props) => props.offsetY}px;
+    width: ${(props) => props.width}px;
+    height: ${(props) => props.height}px;
+`;
+
 const FrameTooltip = (props: FrameTooltipProps) => {
-    const { duration } = props;
+    const { duration, thumbnailUrl } = props;
+    let img;
+    let dims;
+    // TODO: move this to a utility function
+    if (thumbnailUrl) {
+        img = thumbnailUrl.split('#xywh=');
+        dims = img[1].split(',');
+    }
+
+    console.log({ thumbnailUrl, img, dims });
     return (
-        <div className="frame-snapshot">
-            <img id="frame" src="" alt="frame tooltip" width="50" height="50" style={{ backgroundColor: 'white' }} />
+        <StyledSnapshotContainer className="frame-snapshot">
+            {thumbnailUrl && dims ? (
+                <StyledImage imageUrl={myImage} offsetX={dims[0]} offsetY={dims[1]} width={dims[2]} height={dims[3]} />
+            ) : (
+                <img src="" style={{ backgroundColor: 'white', width: 50, height: 50 }} />
+            )}
             <span>{duration}</span>
-        </div>
+        </StyledSnapshotContainer>
     );
 };
 
