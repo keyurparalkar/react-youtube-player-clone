@@ -1,7 +1,7 @@
 import { useAnimate } from 'framer-motion';
 import { useContext, useEffect } from 'react';
 import { PlayerContext, PlayerDispatchContext } from '../../context';
-import { HAS_VIDEO_SEEKED, UPDATE_VIDEO_CURRENT_TIME } from '../../context/actions';
+import { HAS_VIDEO_SEEKED, UPDATE_HOVERED_DURATION, UPDATE_VIDEO_CURRENT_TIME } from '../../context/actions';
 import ProgressBar from '../common/ProgressBar';
 import Tooltip from '../common/Tooltip';
 import FrameTooltip from './FrameTooltip';
@@ -71,6 +71,13 @@ const Seekbar = () => {
         });
     };
 
+    const onMouseMoveParent = (e: React.MouseEvent<HTMLDivElement>, parentLeft: number) => {
+        const pos = e.pageX - parentLeft;
+
+        const newCurrentTime = (Math.abs(pos) * totalDuration) / 800;
+        dispatch({ type: UPDATE_HOVERED_DURATION, payload: newCurrentTime });
+    };
+
     useEffect(() => {
         if (sliderRef.current) {
             sliderAnimate(
@@ -99,6 +106,7 @@ const Seekbar = () => {
                     onPositionChangeByDrag={onPositionChangeByDrag}
                     onPositionChangeByClick={onPositionChangeByClick}
                     onMouseDown={onMouseDown}
+                    onMouseMoveParent={onMouseMoveParent}
                     ref={sliderRef}
                 />
             </Tooltip>

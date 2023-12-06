@@ -1,8 +1,6 @@
 import { motion } from 'framer-motion';
-import { forwardRef, Ref, useContext, useEffect, useRef, useState } from 'react';
+import { forwardRef, Ref, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { PlayerDispatchContext } from '../../../context';
-import { UPDATE_HOVERED_DURATION } from '../../../context/actions';
 
 export type ProgressBarProps = {
     initialPos?: number;
@@ -10,6 +8,7 @@ export type ProgressBarProps = {
     onPositionChangeByClick?: (e: React.MouseEvent<HTMLDivElement>, parentLeft: number) => void;
     onDragEnd?: () => void;
     onMouseDown?: () => void;
+    onMouseMoveParent?: (e: React.MouseEvent<HTMLDivElement>, parentLeft: number) => void;
 };
 
 type SliderProps = {
@@ -61,8 +60,14 @@ const StyledVideoSlider = styled(motion.div)<SliderProps>`
  * With the help of this ref you can do multiple animations on the knob from the parent component.
  */
 const ProgressBar = (props: ProgressBarProps, sliderRef: Ref<HTMLDivElement>) => {
-    const { initialPos = 0, onPositionChangeByDrag, onPositionChangeByClick, onDragEnd, onMouseDown } = props;
-    const dispatch = useContext(PlayerDispatchContext);
+    const {
+        initialPos = 0,
+        onPositionChangeByDrag,
+        onPositionChangeByClick,
+        onDragEnd,
+        onMouseDown,
+        onMouseMoveParent,
+    } = props;
     const scope = useRef<HTMLDivElement | null>(null);
     const [parentWidth, setParentWidth] = useState(0);
 
@@ -73,6 +78,13 @@ const ProgressBar = (props: ProgressBarProps, sliderRef: Ref<HTMLDivElement>) =>
         }
     };
 
+    const handleOnMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (scope.current) {
+            const rect = scope.current.getBoundingClientRect();
+            onMouseMoveParent?.(e, rect.left);
+        }
+    };
+
     useEffect(() => {
         if (scope.current) {
             setParentWidth(scope.current.clientWidth);
@@ -80,19 +92,7 @@ const ProgressBar = (props: ProgressBarProps, sliderRef: Ref<HTMLDivElement>) =>
     }, []);
 
     return (
-        <StyledPanelContainer
-            ref={scope}
-            // TODO(keyur): Move this to seekbar component
-            onMouseMove={(e: React.MouseEvent<HTMLDivElement>) => {
-                if (scope.current) {
-                    const rect = scope.current.getBoundingClientRect();
-                    const pos = e.pageX - rect.left;
-
-                    const newCurrentTime = (Math.abs(pos) * 70.1) / 800;
-                    dispatch({ type: UPDATE_HOVERED_DURATION, payload: newCurrentTime });
-                }
-            }}
-        >
+        <StyledPanelContainer ref={scope} onMouseMove={handleOnMouseMove}>
             <StyledVideoSlider
                 drag="x"
                 initial={{
