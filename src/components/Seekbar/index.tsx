@@ -5,6 +5,7 @@ import { HAS_VIDEO_SEEKED, UPDATE_HOVERED_DURATION, UPDATE_VIDEO_CURRENT_TIME } 
 import ProgressBar from '../common/ProgressBar';
 import Tooltip from '../common/Tooltip';
 import FrameTooltip from './FrameTooltip';
+import { computeVideoDurarionFromSliderPosition } from './utils';
 
 const tooltipStyles: React.CSSProperties = {
     backgroundColor: 'transparent',
@@ -43,10 +44,7 @@ const Seekbar = () => {
     };
 
     const onPositionChangeByClick = (e: React.MouseEvent<HTMLDivElement>, parentLeft: number) => {
-        const pos = e.pageX - parentLeft;
-
-        const newCurrentTime = (Math.abs(pos) * totalDuration) / 800;
-
+        const newCurrentTime = computeVideoDurarionFromSliderPosition(e.pageX, parentLeft, totalDuration, 800);
         dispatch({
             type: UPDATE_VIDEO_CURRENT_TIME,
             payload: { currentTime: newCurrentTime },
@@ -72,9 +70,7 @@ const Seekbar = () => {
     };
 
     const onMouseMoveParent = (e: React.MouseEvent<HTMLDivElement>, parentLeft: number) => {
-        const pos = e.pageX - parentLeft;
-
-        const newCurrentTime = (Math.abs(pos) * totalDuration) / 800;
+        const newCurrentTime = computeVideoDurarionFromSliderPosition(e.pageX, parentLeft, totalDuration, 800);
         dispatch({ type: UPDATE_HOVERED_DURATION, payload: newCurrentTime });
     };
 

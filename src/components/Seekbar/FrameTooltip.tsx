@@ -1,8 +1,14 @@
 import styled from 'styled-components';
+import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
+
 import { Duration } from '../../context';
 // TODO: Add batched stripes dynamically
 // TODO: move the .vtt and the video to a remote location
 import myImage from '../../assets/videos/tears-of-steel-battle-clip-medium_sprite.jpg';
+import { useMemo } from 'react';
+
+dayjs.extend(duration);
 
 type FrameTooltipProps = {
     duration: Duration;
@@ -42,7 +48,8 @@ const FrameTooltip = (props: FrameTooltipProps) => {
         dims = img[1].split(',');
     }
 
-    console.log({ thumbnailUrl, img, dims });
+    const formattedDuration = useMemo(() => dayjs.duration(duration, 'seconds').format('m:ss'), [duration]);
+
     return (
         <StyledSnapshotContainer className="frame-snapshot">
             {thumbnailUrl && dims ? (
@@ -50,7 +57,7 @@ const FrameTooltip = (props: FrameTooltipProps) => {
             ) : (
                 <img src="" style={{ backgroundColor: 'white', width: 50, height: 50 }} />
             )}
-            <span>{duration}</span>
+            <span>{formattedDuration}</span>
         </StyledSnapshotContainer>
     );
 };
