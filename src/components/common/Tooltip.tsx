@@ -15,6 +15,7 @@ type TooltipProps = {
     content: string | ReactElement;
     movingTooltip?: boolean;
     children?: ReactElement;
+    tooltipStyles?: React.CSSProperties;
 };
 
 const StyledTooltip = styled.div`
@@ -27,7 +28,7 @@ const StyledTooltip = styled.div`
 `;
 
 const Tooltip = (props: TooltipProps) => {
-    const { children, content, movingTooltip = false } = props;
+    const { children, content, movingTooltip = false, tooltipStyles } = props;
     const [isOpen, setIsOpen] = useState(false);
 
     const { refs, floatingStyles, context } = useFloating({
@@ -59,7 +60,11 @@ const Tooltip = (props: TooltipProps) => {
             </div>
 
             {isOpen && (
-                <StyledTooltip ref={refs.setFloating} style={floatingStyles} {...getFloatingProps()}>
+                <StyledTooltip
+                    ref={refs.setFloating}
+                    style={{ ...floatingStyles, ...tooltipStyles }}
+                    {...getFloatingProps()}
+                >
                     {content}
                 </StyledTooltip>
             )}

@@ -6,6 +6,10 @@ import ProgressBar from '../common/ProgressBar';
 import Tooltip from '../common/Tooltip';
 import FrameTooltip from './FrameTooltip';
 
+const tooltipStyles: React.CSSProperties = {
+    backgroundColor: 'transparent',
+};
+
 const Seekbar = () => {
     const { currentTime, totalDuration, hoveredDuration, hoveredThumbnailUrl } = useContext(PlayerContext);
     const dispatch = useContext(PlayerDispatchContext);
@@ -87,6 +91,7 @@ const Seekbar = () => {
             <Tooltip
                 content={<FrameTooltip duration={hoveredDuration} thumbnailUrl={hoveredThumbnailUrl} />}
                 movingTooltip
+                tooltipStyles={tooltipStyles}
             >
                 <ProgressBar
                     initialPos={completedTime}

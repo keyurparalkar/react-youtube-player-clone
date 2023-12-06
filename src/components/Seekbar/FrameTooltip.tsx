@@ -28,6 +28,8 @@ const StyledImage = styled.img<ImageProps>`
     background: url(${(props) => props.imageUrl}) -${(props) => props.offsetX}px -${(props) => props.offsetY}px;
     width: ${(props) => props.width}px;
     height: ${(props) => props.height}px;
+    border: 2px solid white;
+    border-radius: 10px;
 `;
 
 const FrameTooltip = (props: FrameTooltipProps) => {
