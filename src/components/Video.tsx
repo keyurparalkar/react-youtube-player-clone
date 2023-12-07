@@ -6,10 +6,11 @@ import {
     UPDATE_HOVERED_THUMBNAIL_URL,
     UPDATE_VIDEO_CURRENT_TIME,
 } from '../context/actions';
+import { constructUrl } from '../utils';
 
-// Importing files locally
-import myvideo from '../assets/videos/myvideo.mp4';
-import thumbnailVtt from '../assets/videos/myvideo.vtt';
+const { REACT_APP_BASE_URL, REACT_APP_VIDEO_URL, REACT_APP_VTT_URL } = process.env;
+const VIDEO_SRC = constructUrl([REACT_APP_BASE_URL, REACT_APP_VIDEO_URL]);
+const VTT_SRC = constructUrl([REACT_APP_BASE_URL, REACT_APP_VTT_URL]);
 
 const Video = () => {
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -101,9 +102,9 @@ const Video = () => {
     return (
         <>
             <div onClick={onPlayPause} className="html-video-container">
-                <video onTimeUpdate={handleTimeUpdate} ref={videoRef}>
-                    <source src={myvideo} type="video/mp4" />
-                    <track ref={trackRef} default kind="metadata" src={thumbnailVtt} />
+                <video onTimeUpdate={handleTimeUpdate} ref={videoRef} crossOrigin="">
+                    <source src={VIDEO_SRC} type="video/mp4" />
+                    <track ref={trackRef} default kind="metadata" src={VTT_SRC} />
                     test
                 </video>
             </div>
@@ -115,9 +116,6 @@ const Video = () => {
                         muted,
                         currentTime: currentTime,
                         duration: videoRef.current ? videoRef.current.duration : 0,
-                        // percentageCompleted: videoRef.current
-                        //     ? (videoRef.current.currentTime / videoRef.current.duration) * 100
-                        //     : 0,
                         hasSeeked,
                         hoveredDuration,
                         hoveredThumbnailUrl,

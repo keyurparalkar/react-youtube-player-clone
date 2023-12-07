@@ -13,3 +13,7 @@ export const StyledIconButton = styled.button<IconButtonProps>`
     color: inherit;
     font-size: ${(props) => (props.iconSize || props.iconSize !== '' ? props.iconSize : '')};
 `;
+
+export const constructUrl = (urls: Array<string | undefined>) => {
+    return urls.reduce((acc: string, url) => acc + (url ?? ''), '');
+};

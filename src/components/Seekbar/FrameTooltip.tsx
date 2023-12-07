@@ -4,9 +4,11 @@ import duration from 'dayjs/plugin/duration';
 
 import { Duration } from '../../context';
 // TODO: Add batched stripes dynamically
-// TODO: move the .vtt and the video to a remote location
-import myImage from '../../assets/videos/tears-of-steel-battle-clip-medium_sprite.jpg';
 import { useMemo } from 'react';
+import { constructUrl } from '../../utils';
+
+const { REACT_APP_BASE_URL, REACT_APP_IMAGE_STRIPE_URL } = process.env;
+const IMAGE_STRIPE_URL = constructUrl([REACT_APP_BASE_URL, REACT_APP_IMAGE_STRIPE_URL]);
 
 dayjs.extend(duration);
 
@@ -29,7 +31,7 @@ const StyledSnapshotContainer = styled.div`
     text-align: center;
 `;
 
-const StyledImage = styled.img<ImageProps>`
+const StyledImage = styled.div<ImageProps>`
     display: inline-block;
     background: url(${(props) => props.imageUrl}) -${(props) => props.offsetX}px -${(props) => props.offsetY}px;
     width: ${(props) => props.width}px;
@@ -53,7 +55,13 @@ const FrameTooltip = (props: FrameTooltipProps) => {
     return (
         <StyledSnapshotContainer className="frame-snapshot">
             {thumbnailUrl && dims ? (
-                <StyledImage imageUrl={myImage} offsetX={dims[0]} offsetY={dims[1]} width={dims[2]} height={dims[3]} />
+                <StyledImage
+                    imageUrl={IMAGE_STRIPE_URL}
+                    offsetX={dims[0]}
+                    offsetY={dims[1]}
+                    width={dims[2]}
+                    height={dims[3]}
+                />
             ) : (
                 <img src="" style={{ backgroundColor: 'white', width: 50, height: 50 }} />
             )}
