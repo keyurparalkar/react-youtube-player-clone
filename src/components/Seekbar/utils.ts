@@ -15,5 +15,14 @@ export const computeVideoDurarionFromSliderPosition = (
 ) => {
     const pos = pageX - parentLeft;
 
-    return (Math.abs(pos) * totalDuration) / progressBarWidth;
+    /**
+     * In Video.tsx, we have an useEffect that exuecutes on change of hoveredDuration.
+     * Below value that is returned is the hoveredDuration.
+     * By making use of Math.round we have optimised and reduced the unnessary re-renders of all context attached components.
+     * Scenario:
+     * - Without Math.round the value of hoveredDuration changed by a very small amount while hovering i.e. 25.6789 to 25.6790 etc
+     * - With Math.round this value is always rounded to nearest integer i.e. Even for small change like above the value of hoveredDuration remains 25.
+     * We don't need to re-run the above useEffect for such a small change, hence for the optimsation purposes Math.round is used.
+     */
+    return Math.round((Math.abs(pos) * totalDuration) / progressBarWidth);
 };
