@@ -33,10 +33,6 @@ const Video = () => {
         }
     };
 
-    // const onCueChange = (e: any) => {
-    //     console.log({ e });
-    // };
-
     useEffect(() => {
         if (videoRef.current) {
             const video = videoRef.current;
@@ -67,23 +63,11 @@ const Video = () => {
     }, [hasSeeked]);
 
     useEffect(() => {
-        // TODO(Keyur): Make this effect efficient by throttling or debounce
-        // Update the thumbnailURL when hovered duration is changed
         if (trackRef.current) {
             const { track } = trackRef.current;
-
-            /**
-             * Algo:
-             * 1. Get all cues
-             * 2. Convert HoveredDuration to integer
-             * 3. Index to the specifc cue like this: cue[integerDuration]
-             * 4. Get the cue's text property
-             * 5. Store it in the Global state;
-             */
-
             const allCues = track.cues;
-            const truncatedDuration = Math.trunc(hoveredDuration);
-            const currentCue = allCues?.[truncatedDuration];
+            const cueIndex = Math.trunc(hoveredDuration);
+            const currentCue = allCues?.[cueIndex];
             if (currentCue) {
                 const { text } = currentCue as VTTCue;
                 dispatch({ type: UPDATE_HOVERED_THUMBNAIL_URL, payload: text });
