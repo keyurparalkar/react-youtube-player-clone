@@ -34,6 +34,7 @@ const StyledSnapshotContainer = styled.div`
 const StyledImage = styled.div<ImageProps>`
     display: inline-block;
     background: url(${(props) => props.imageUrl}) -${(props) => props.offsetX}px -${(props) => props.offsetY}px;
+    background-color: #2c2c2c;
     width: ${(props) => props.width}px;
     height: ${(props) => props.height}px;
     border: 2px solid white;
@@ -63,7 +64,7 @@ const FrameTooltip = (props: FrameTooltipProps) => {
                     height={dims[3]}
                 />
             ) : (
-                <img src="" style={{ backgroundColor: 'white', width: 50, height: 50 }} />
+                <img src="" style={{ backgroundColor: 'white', width: 200, height: 83 }} />
             )}
             <span>{formattedDuration}</span>
         </StyledSnapshotContainer>
