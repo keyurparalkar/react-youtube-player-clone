@@ -3,12 +3,11 @@ import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 
 import { Duration } from '../../context';
-// TODO: Add batched stripes dynamically
 import { useMemo } from 'react';
 import { constructUrl } from '../../utils';
 
-const { REACT_APP_BASE_URL, REACT_APP_IMAGE_STRIPE_URL } = process.env;
-const IMAGE_STRIPE_URL = constructUrl([REACT_APP_BASE_URL, REACT_APP_IMAGE_STRIPE_URL]);
+const { REACT_APP_BASE_URL, REACT_APP_IMAGE_SPRITE_URL, REACT_APP_IMAGE_SPRITE_KEY } = process.env;
+const IMAGE_STRIPE_URL = constructUrl([REACT_APP_BASE_URL, REACT_APP_IMAGE_SPRITE_URL]);
 
 dayjs.extend(duration);
 
@@ -18,11 +17,11 @@ type FrameTooltipProps = {
 };
 
 type ImageProps = {
-    imageUrl: string;
+    $imageUrl: string;
     width?: string;
     height?: string;
-    offsetX: string;
-    offsetY: string;
+    $offsetX: string;
+    $offsetY: string;
 };
 
 const StyledSnapshotContainer = styled.div`
@@ -33,7 +32,8 @@ const StyledSnapshotContainer = styled.div`
 
 const StyledImage = styled.div<ImageProps>`
     display: inline-block;
-    background: url(${(props) => props.imageUrl}) -${(props) => props.offsetX}px -${(props) => props.offsetY}px;
+    // important to provide negative values to x and y offset because we need to start sliding from left to right on the grid
+    background: url(${(props) => props.$imageUrl}) -${(props) => props.$offsetX}px -${(props) => props.$offsetY}px;
     background-color: #2c2c2c;
     width: ${(props) => props.width}px;
     height: ${(props) => props.height}px;
@@ -43,23 +43,25 @@ const StyledImage = styled.div<ImageProps>`
 
 const FrameTooltip = (props: FrameTooltipProps) => {
     const { duration, thumbnailUrl } = props;
-    let img;
+    let spriteImageName;
     let dims;
-    // TODO: move this to a utility function
+
     if (thumbnailUrl) {
-        img = thumbnailUrl.split('#xywh=');
-        dims = img[1].split(',');
+        [spriteImageName, dims] = thumbnailUrl.split('#xywh=');
+        dims = dims.split(',');
     }
 
     const formattedDuration = useMemo(() => dayjs.duration(duration, 'seconds').format('m:ss'), [duration]);
 
+    const imgUrl = `${IMAGE_STRIPE_URL}/${spriteImageName}?${REACT_APP_IMAGE_SPRITE_KEY}`;
+
     return (
         <StyledSnapshotContainer className="frame-snapshot">
-            {thumbnailUrl && dims ? (
+            {thumbnailUrl && dims && REACT_APP_IMAGE_SPRITE_KEY ? (
                 <StyledImage
-                    imageUrl={IMAGE_STRIPE_URL}
-                    offsetX={dims[0]}
-                    offsetY={dims[1]}
+                    $imageUrl={imgUrl}
+                    $offsetX={dims[0]}
+                    $offsetY={dims[1]}
                     width={dims[2]}
                     height={dims[3]}
                 />
