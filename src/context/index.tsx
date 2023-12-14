@@ -1,68 +1,51 @@
-import { createContext, Dispatch, Reducer, useReducer } from "react";
-import { ON_MUTE, PLAY_PAUSE, VOLUME_CHANGE } from "./actions";
+import { createContext, Dispatch, ReactElement, Reducer, useReducer } from 'react';
+import { playerReducer } from './reducers';
 
-type StateProps = {
-  isPlaying: boolean;
-  muted: boolean;
-  volume: number;
+export type Duration = number;
+
+export type StateProps = {
+    isPlaying: boolean;
+    muted: boolean;
+    volume: number;
+    hasVideoLoaded: boolean;
+    totalDuration: Duration;
+    currentTime: Duration;
+    hasSeeked: boolean;
+    hoveredDuration: Duration;
+    hoveredThumbnailUrl: string;
 };
 
-type ActionProps = {
-  type: string;
-  payload?: any;
+export type ActionProps = {
+    type: string;
+    // eslint-disable-next-line
+    payload?: any;
 };
 
-export const initialState = {
-  isPlaying: false,
-  muted: false,
-  volume: 1,
+type PlayerProviderProps = {
+    children?: ReactElement;
+};
+
+export const initialState: StateProps = {
+    isPlaying: false,
+    muted: false,
+    volume: 1,
+    hasVideoLoaded: false,
+    totalDuration: 0,
+    currentTime: 0,
+    hasSeeked: false,
+    hoveredDuration: 0,
+    hoveredThumbnailUrl: '',
 };
 
 export const PlayerContext = createContext<StateProps>(initialState);
-export const PlayerDispatchContext = createContext<Dispatch<ActionProps>>(
-  (() => undefined) as Dispatch<ActionProps>
-);
+export const PlayerDispatchContext = createContext<Dispatch<ActionProps>>((() => undefined) as Dispatch<ActionProps>);
 
-export const playerReducer = (state: StateProps, action: ActionProps) => {
-  switch (action.type) {
-    case PLAY_PAUSE: {
-      return {
-        ...state,
-        isPlaying: action.payload,
-      };
-    }
+export const PlayerProvider = ({ children }: PlayerProviderProps) => {
+    const [state, dispatch] = useReducer<Reducer<StateProps, ActionProps>>(playerReducer, initialState);
 
-    case ON_MUTE: {
-      return {
-        ...state,
-        muted: action.payload,
-      };
-    }
-
-    case VOLUME_CHANGE: {
-      return {
-        ...state,
-        volume: action.payload,
-      };
-    }
-
-    default: {
-      throw Error("Unknown action: " + action.type);
-    }
-  }
-};
-
-export const PlayerProvider = ({ children }: any) => {
-  const [state, dispatch] = useReducer<Reducer<StateProps, ActionProps>>(
-    playerReducer,
-    initialState
-  );
-
-  return (
-    <PlayerContext.Provider value={state}>
-      <PlayerDispatchContext.Provider value={dispatch}>
-        {children}
-      </PlayerDispatchContext.Provider>
-    </PlayerContext.Provider>
-  );
+    return (
+        <PlayerContext.Provider value={state}>
+            <PlayerDispatchContext.Provider value={dispatch}>{children}</PlayerDispatchContext.Provider>
+        </PlayerContext.Provider>
+    );
 };

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@floating-ui/react": "^0.26.3",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -10,13 +11,14 @@
     "@types/node": "^16.18.47",
     "@types/react": "^18.2.21",
     "@types/react-dom": "^18.2.7",
+    "dayjs": "^1.11.10",
     "framer-motion": "^10.16.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.10.1",
     "react-scripts": "5.0.1",
     "styled-components": "^6.0.7",
-    "typescript": "^4.9.5",
+    "typescript": "*",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -42,5 +44,18 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.4.0",
+    "@typescript-eslint/parser": "^6.11.0",
+    "eslint": "^8.0.1",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-config-standard-with-typescript": "^39.1.1",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-n": "^15.0.0 || ^16.0.0 ",
+    "eslint-plugin-prettier": "^5.0.1",
+    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-react": "^7.33.2",
+    "prettier": "^3.1.0"
   }
 }
