@@ -5,6 +5,7 @@ import { PlayerContext } from '../context';
 import PlayButton from './PlayButton';
 import VolumeControl from './VolumeControl';
 import Seekbar from './Seekbar';
+import Slider from './common/Slider';
 
 const StyledVideoControl = styled(motion.div)<{ isPlaying?: boolean }>`
     position: absolute;
@@ -26,6 +27,7 @@ const ControlToolbar = () => {
     return (
         <StyledVideoControl className="video-controls" isPlaying={isPlaying}>
             <Seekbar />
+            <Slider />
             <StyledInteractionGroup1 className="interaction-group-1">
                 <PlayButton />
                 <VolumeControl />
