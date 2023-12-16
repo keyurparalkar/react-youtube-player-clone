@@ -3,6 +3,7 @@ import { useContext, useEffect } from 'react';
 import { PlayerContext, PlayerDispatchContext } from '../../context';
 import { HAS_VIDEO_SEEKED, UPDATE_HOVERED_DURATION, UPDATE_VIDEO_CURRENT_TIME } from '../../context/actions';
 import ProgressBar from '../common/ProgressBar';
+import Slider from '../common/Slider';
 import Tooltip from '../common/Tooltip';
 import FrameTooltip from './FrameTooltip';
 import { computeVideoDurarionFromSliderPosition } from './utils';
@@ -96,7 +97,7 @@ const Seekbar = () => {
                 movingTooltip
                 tooltipStyles={tooltipStyles}
             >
-                <ProgressBar
+                {/* <ProgressBar
                     initialPos={completedTime}
                     onDragEnd={onDragEnd}
                     onPositionChangeByDrag={onPositionChangeByDrag}
@@ -104,7 +105,8 @@ const Seekbar = () => {
                     onMouseDown={onMouseDown}
                     onMouseMoveParent={onMouseMoveParent}
                     ref={sliderRef}
-                />
+                /> */}
+                <Slider total={800} onClick={onPositionChangeByClick} onMouseDown={onMouseDown} />
             </Tooltip>
         </div>
     );
