@@ -1,7 +1,7 @@
 import { useAnimate } from 'framer-motion';
 import { useContext, useEffect } from 'react';
 import { PlayerContext, PlayerDispatchContext } from '../../context';
-import { HAS_VIDEO_SEEKED, UPDATE_HOVERED_DURATION, UPDATE_VIDEO_CURRENT_TIME } from '../../context/actions';
+import { HAS_VIDEO_SEEKED, UPDATE_VIDEO_CURRENT_TIME } from '../../context/actions';
 // import ProgressBar from '../common/ProgressBar';
 import Slider from '../common/Slider';
 import Tooltip from '../common/Tooltip';
@@ -20,6 +20,7 @@ const Seekbar = () => {
     const completedTime = currentTime / totalDuration || 0;
 
     const onPositionChangeByDrag = (e: React.DragEvent<HTMLDivElement>) => {
+        // optimize this with --slider-fill;
         const transformStyle = e.currentTarget?.style.transform;
         if (transformStyle && transformStyle !== 'none') {
             const current = parseFloat(transformStyle.replace(/[^\d.]/g, ''));
@@ -45,6 +46,7 @@ const Seekbar = () => {
     };
 
     const onPositionChangeByClick = (e: React.MouseEvent<HTMLDivElement>, parentLeft: number) => {
+        // optimize this with --slider-fill;
         const newCurrentTime = computeVideoDurarionFromSliderPosition(e.pageX, parentLeft, totalDuration, 800);
         dispatch({
             type: UPDATE_VIDEO_CURRENT_TIME,
@@ -70,10 +72,10 @@ const Seekbar = () => {
         });
     };
 
-    const onMouseMoveParent = (e: React.MouseEvent<HTMLDivElement>, parentLeft: number) => {
-        const newCurrentTime = computeVideoDurarionFromSliderPosition(e.pageX, parentLeft, totalDuration, 800);
-        dispatch({ type: UPDATE_HOVERED_DURATION, payload: newCurrentTime });
-    };
+    // const onMouseMoveParent = (e: React.MouseEvent<HTMLDivElement>, parentLeft: number) => {
+    //     const newCurrentTime = computeVideoDurarionFromSliderPosition(e.pageX, parentLeft, totalDuration, 800);
+    //     dispatch({ type: UPDATE_HOVERED_DURATION, payload: newCurrentTime });
+    // };
 
     useEffect(() => {
         if (sliderRef.current) {
