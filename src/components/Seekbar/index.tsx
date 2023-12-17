@@ -2,7 +2,7 @@ import { useAnimate } from 'framer-motion';
 import { useContext, useEffect } from 'react';
 import { PlayerContext, PlayerDispatchContext } from '../../context';
 import { HAS_VIDEO_SEEKED, UPDATE_HOVERED_DURATION, UPDATE_VIDEO_CURRENT_TIME } from '../../context/actions';
-import ProgressBar from '../common/ProgressBar';
+// import ProgressBar from '../common/ProgressBar';
 import Slider from '../common/Slider';
 import Tooltip from '../common/Tooltip';
 import FrameTooltip from './FrameTooltip';
@@ -19,8 +19,8 @@ const Seekbar = () => {
 
     const completedTime = currentTime / totalDuration || 0;
 
-    const onPositionChangeByDrag = (e: MouseEvent | TouchEvent | PointerEvent) => {
-        const transformStyle = (e.target as HTMLDivElement)?.style.transform;
+    const onPositionChangeByDrag = (e: React.DragEvent<HTMLDivElement>) => {
+        const transformStyle = e.currentTarget?.style.transform;
         if (transformStyle && transformStyle !== 'none') {
             const current = parseFloat(transformStyle.replace(/[^\d.]/g, ''));
             const currentTime = (current * totalDuration) / 800;
@@ -106,7 +106,13 @@ const Seekbar = () => {
                     onMouseMoveParent={onMouseMoveParent}
                     ref={sliderRef}
                 /> */}
-                <Slider total={800} onClick={onPositionChangeByClick} onMouseDown={onMouseDown} />
+                <Slider
+                    total={800}
+                    onClick={onPositionChangeByClick}
+                    onMouseDown={onMouseDown}
+                    onDrag={onPositionChangeByDrag}
+                    onDragEnd={onDragEnd}
+                />
             </Tooltip>
         </div>
     );
