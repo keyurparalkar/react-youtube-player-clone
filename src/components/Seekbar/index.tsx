@@ -1,7 +1,7 @@
 import { useAnimate } from 'framer-motion';
 import { useContext, useEffect } from 'react';
 import { PlayerContext, PlayerDispatchContext } from '../../context';
-import { HAS_VIDEO_SEEKED, UPDATE_VIDEO_CURRENT_TIME } from '../../context/actions';
+import { UPDATE_VIDEO_CURRENT_TIME } from '../../context/actions';
 // import ProgressBar from '../common/ProgressBar';
 import Slider from '../common/Slider';
 import Tooltip from '../common/Tooltip';
@@ -32,18 +32,6 @@ const Seekbar = () => {
             type: UPDATE_VIDEO_CURRENT_TIME,
             payload: { currentTime },
         });
-
-        // dispatch({
-        //     type: HAS_VIDEO_SEEKED,
-        //     payload: true,
-        // });
-    };
-
-    const onDragEnd = () => {
-        dispatch({
-            type: HAS_VIDEO_SEEKED,
-            payload: false,
-        });
     };
 
     const onPositionChangeByClick = (e: React.MouseEvent<HTMLDivElement>, parentLeft: number) => {
@@ -52,24 +40,6 @@ const Seekbar = () => {
         dispatch({
             type: UPDATE_VIDEO_CURRENT_TIME,
             payload: { currentTime: newCurrentTime },
-        });
-
-        /**
-         * We make the hasSeeked false when the click is complete
-         * Click is completed when Mouse button moves down and then up.
-         * Click event handlers are executed as follows:
-         * onMouseDown -> onMouseUp -> onClick
-         */
-        dispatch({
-            type: HAS_VIDEO_SEEKED,
-            payload: false,
-        });
-    };
-
-    const onMouseDown = () => {
-        dispatch({
-            type: HAS_VIDEO_SEEKED,
-            payload: true,
         });
     };
 
@@ -109,13 +79,7 @@ const Seekbar = () => {
                     onMouseMoveParent={onMouseMoveParent}
                     ref={sliderRef}
                 /> */}
-                <Slider
-                    total={800}
-                    onClick={onPositionChangeByClick}
-                    onMouseDown={onMouseDown}
-                    onDrag={onPositionChangeByDrag}
-                    onDragEnd={onDragEnd}
-                />
+                <Slider total={800} onClick={onPositionChangeByClick} onDrag={onPositionChangeByDrag} />
             </Tooltip>
         </div>
     );

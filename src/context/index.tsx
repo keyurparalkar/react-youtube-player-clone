@@ -10,7 +10,6 @@ export type StateProps = {
     hasVideoLoaded: boolean;
     totalDuration: Duration;
     currentTime: Duration;
-    hasSeeked: boolean;
     hoveredDuration: Duration;
     hoveredThumbnailUrl: string;
 };
@@ -32,7 +31,6 @@ export const initialState: StateProps = {
     hasVideoLoaded: false,
     totalDuration: 0,
     currentTime: 0,
-    hasSeeked: false,
     hoveredDuration: 0,
     hoveredThumbnailUrl: '',
 };

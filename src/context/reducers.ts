@@ -1,7 +1,6 @@
 import { ActionProps, StateProps } from '.';
 import {
     HAS_VIDEO_LOADED,
-    HAS_VIDEO_SEEKED,
     ON_MUTE,
     PLAY_PAUSE,
     UPDATE_HOVERED_DURATION,
@@ -45,13 +44,6 @@ export const playerReducer = (state: StateProps, action: ActionProps) => {
             return {
                 ...state,
                 currentTime: action.payload.currentTime,
-            };
-        }
-
-        case HAS_VIDEO_SEEKED: {
-            return {
-                ...state,
-                hasSeeked: action.payload,
             };
         }
 

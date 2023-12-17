@@ -37,7 +37,7 @@ const StyledThumb = styled.div`
 `;
 
 const Slider = (props: SliderProps) => {
-    const { total, onClick, onMouseDown, onDrag, onDragEnd } = props;
+    const { total, onClick, onMouseDown, onDrag } = props;
     const rootRef = useRef<HTMLDivElement>(null);
     // const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     //     const elem = e.currentTarget;
