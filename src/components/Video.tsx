@@ -24,7 +24,7 @@ const Video = () => {
     };
 
     const handleTimeUpdate = () => {
-        if (videoRef.current && !hasSeeked) {
+        if (videoRef.current && isPlaying) {
             dispatch({
                 type: UPDATE_VIDEO_CURRENT_TIME,
                 payload: {
@@ -58,10 +58,10 @@ const Video = () => {
     }, [volume]);
 
     useEffect(() => {
-        if (videoRef.current) {
+        if (videoRef.current && !isPlaying) {
             videoRef.current.currentTime = currentTime;
         }
-    }, [hasSeeked]);
+    }, [currentTime, isPlaying]);
 
     useEffect(() => {
         if (trackRef.current) {

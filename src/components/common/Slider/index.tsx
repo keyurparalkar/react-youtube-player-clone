@@ -3,9 +3,10 @@ import { useRef } from 'react';
 import styled from 'styled-components';
 import { computeCurrentWidthFromPointerPos } from './utils';
 
-interface SliderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onClick'> {
+interface SliderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onClick' | 'onDrag'> {
     total: number;
     onClick?: (e: React.MouseEvent<HTMLDivElement>, parentLeft: number) => void;
+    onDrag?: (completedPercentage: number) => void;
 }
 
 const StyledContainer = styled.div`
@@ -73,7 +74,7 @@ const Slider = (props: SliderProps) => {
 
             const fillWidth = computeCurrentWidthFromPointerPos(e.pageX, rect.left, total);
             rootRef.current?.style.setProperty('--slider-fill', `${fillWidth}%`);
-            // onDrag?.(e);
+            onDrag?.(fillWidth);
         }
     };
 

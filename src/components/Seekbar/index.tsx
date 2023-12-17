@@ -19,23 +19,24 @@ const Seekbar = () => {
 
     const completedTime = currentTime / totalDuration || 0;
 
-    const onPositionChangeByDrag = (e: React.DragEvent<HTMLDivElement>) => {
+    const onPositionChangeByDrag = (completedPercentage: number) => {
         // optimize this with --slider-fill;
-        const transformStyle = e.currentTarget?.style.transform;
-        if (transformStyle && transformStyle !== 'none') {
-            const current = parseFloat(transformStyle.replace(/[^\d.]/g, ''));
-            const currentTime = (current * totalDuration) / 800;
+        // const transformStyle = e.currentTarget?.style.transform;
+        // if (transformStyle && transformStyle !== 'none') {
+        //     const current = parseFloat(transformStyle.replace(/[^\d.]/g, ''));
+        //     const currentTime = (current * totalDuration) / 800;
 
-            dispatch({
-                type: UPDATE_VIDEO_CURRENT_TIME,
-                payload: { currentTime },
-            });
+        // }
+        const currentTime = (completedPercentage * totalDuration) / 100;
+        dispatch({
+            type: UPDATE_VIDEO_CURRENT_TIME,
+            payload: { currentTime },
+        });
 
-            dispatch({
-                type: HAS_VIDEO_SEEKED,
-                payload: true,
-            });
-        }
+        // dispatch({
+        //     type: HAS_VIDEO_SEEKED,
+        //     payload: true,
+        // });
     };
 
     const onDragEnd = () => {
