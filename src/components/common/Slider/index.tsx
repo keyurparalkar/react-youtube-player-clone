@@ -12,32 +12,46 @@ interface SliderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onClic
 const StyledContainer = styled.div`
     --slider-pointer: 0%; // when hover happens pointer is updated
     --slider-fill: 0%; // when click and drag happens fill is updated
-`;
-const StyledSlider = styled.div`
-    height: 14px;
-    background-color: red;
     position: relative;
+    height: 45px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+`;
+const StyledTrack = styled.div`
+    width: 100%;
+    height: 5px;
+    background-color: red;
+    position: absolute;
+    pointer-events: auto;
 `;
 
 const StyledSliderFill = styled.div`
-    height: 14px;
+    height: 5px;
     background-color: blue;
     width: var(--slider-fill, 0%);
+    position: absolute;
+    pointer-events: none;
+    /** https://developer.mozilla.org/en-US/docs/Web/CSS/pointer-events#none
+     * <--- Very usefull. This helped to disable any pointer interaction being caught in the target.
+     * This helped us to catch the pointer-events present in its decendants i.e. In the styledtrack.
+     * We did this because there was a bug that didn't allowed to select the video duration that was already visited(Since trackfill is an overlay over styledtrack, so any click event happening on this element did appeared on the styledtrack)
+     * So now even clicking this element, the below element i.e. styled track component will recieve the pointer events
+     */
 `;
 
 const StyledThumb = styled.div`
-    height: 24px;
-    width: 24px;
+    height: 15px;
+    width: 15px;
     border-radius: 50%;
     background-color: green;
-
     position: absolute;
-    top: 12%;
+    bottom: 35%;
     left: var(--slider-fill, 0%);
 `;
 
 const Slider = (props: SliderProps) => {
-    const { total, onClick, onMouseDown, onDrag } = props;
+    const { total, onClick, onDrag } = props;
     const rootRef = useRef<HTMLDivElement>(null);
     // const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     //     const elem = e.currentTarget;
@@ -98,7 +112,7 @@ const Slider = (props: SliderProps) => {
                 onMouseUp={handleContainerMouseUp}
                 ref={rootRef}
             >
-                <StyledSlider className="slider-track" onClick={handleClick} onMouseDown={onMouseDown} />
+                <StyledTrack className="slider-track" onClick={handleClick} />
                 <StyledSliderFill className="slider-fill" />
                 <StyledThumb className="slider-thumb" onMouseDown={handleThumbMouseDown}></StyledThumb>
             </StyledContainer>
