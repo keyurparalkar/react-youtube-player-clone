@@ -17,6 +17,7 @@ const StyledContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
+    cursor: pointer;
 `;
 const StyledTrack = styled.div`
     width: 100%;
@@ -48,6 +49,7 @@ const StyledThumb = styled.div`
     position: absolute;
     bottom: 35%;
     left: var(--slider-fill, 0%);
+    transform: translateX(-50%);
 `;
 
 const Slider = (props: SliderProps) => {
