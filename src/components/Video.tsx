@@ -31,6 +31,9 @@ const Video = () => {
                     currentTime: videoRef.current.currentTime,
                 },
             });
+            // const seekSliderFill = (videoRef.current.currentTime / totalDuration) * 100;
+            // const seekbar = document.querySelector('.slider');
+            // seekbar.style.setProperty('--slider-fill', `${seekSliderFill}%`);
         }
     };
 

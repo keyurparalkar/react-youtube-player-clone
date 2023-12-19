@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef, Ref, useImperativeHandle } from 'react';
 import { useRef } from 'react';
 import styled from 'styled-components';
 import { computeCurrentWidthFromPointerPos } from './utils';
@@ -7,6 +7,10 @@ interface SliderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onClic
     total: number;
     onClick?: (e: React.MouseEvent<HTMLDivElement>, parentLeft: number) => void;
     onDrag?: (completedPercentage: number) => void;
+}
+
+export interface SliderRefProps {
+    updateSliderPosition: (completedPercentage: number) => void;
 }
 
 const StyledContainer = styled.div`
@@ -52,7 +56,7 @@ const StyledThumb = styled.div`
     transform: translateX(-50%);
 `;
 
-const Slider = (props: SliderProps) => {
+const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
     const { total, onClick, onDrag } = props;
     const rootRef = useRef<HTMLDivElement>(null);
     // const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -102,14 +106,22 @@ const Slider = (props: SliderProps) => {
         if (rootRef.current) rootRef.current.setAttribute('data-dragging', 'true');
     };
 
+    useImperativeHandle(
+        ref,
+        () => {
+            return {
+                updateSliderPosition(percentageCompleted: number) {
+                    rootRef.current?.style.setProperty('--slider-fill', `${percentageCompleted}%`);
+                },
+            };
+        },
+        [],
+    );
+
     return (
         <>
             <StyledContainer
                 className="slider"
-                // onMouseDown={onMouseDown}
-                // onDragEnd={onDragEnd}
-                // onDragOver={handleDragOver}
-                // onDrag={handleDrag}
                 onMouseMove={handleContainerMouseMove}
                 onMouseUp={handleContainerMouseUp}
                 ref={rootRef}
@@ -122,4 +134,4 @@ const Slider = (props: SliderProps) => {
     );
 };
 
-export default Slider;
+export default forwardRef(Slider);
