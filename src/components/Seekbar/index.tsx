@@ -4,7 +4,6 @@ import { UPDATE_SEEKING, UPDATE_VIDEO_CURRENT_TIME } from '../../context/actions
 import Slider, { SliderRefProps } from '../common/Slider';
 import Tooltip from '../common/Tooltip';
 import FrameTooltip from './FrameTooltip';
-import { computeVideoDurarionFromSliderPosition } from './utils';
 
 const tooltipStyles: React.CSSProperties = {
     backgroundColor: 'transparent',
@@ -35,9 +34,9 @@ const Seekbar = () => {
         });
     };
 
-    const onPositionChangeByClick = (e: React.MouseEvent<HTMLDivElement>, parentLeft: number) => {
-        // optimize this with --slider-fill;
-        const newCurrentTime = computeVideoDurarionFromSliderPosition(e.pageX, parentLeft, totalDuration, 800);
+    const onPositionChangeByClick = (currentPercentage: number) => {
+        const newCurrentTime = (currentPercentage * totalDuration) / 100;
+
         dispatch({
             type: UPDATE_VIDEO_CURRENT_TIME,
             payload: { currentTime: newCurrentTime },
@@ -58,7 +57,7 @@ const Seekbar = () => {
     useEffect(() => {
         if (sliderRef.current) {
             const newPosPercentage = (currentTime / totalDuration) * 100;
-            sliderRef.current.updateSliderPosition(newPosPercentage);
+            sliderRef.current.updateSliderFill(newPosPercentage);
         }
     }, [currentTime]);
 

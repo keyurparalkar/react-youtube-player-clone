@@ -24,7 +24,6 @@ const Video = () => {
     };
 
     const handleTimeUpdate = () => {
-        // TODO(Keyur): Fix the bug where when video is playing and the user seeks then the currentDuration gets messed
         if (videoRef.current && isPlaying && !isSeeking) {
             dispatch({
                 type: UPDATE_VIDEO_CURRENT_TIME,

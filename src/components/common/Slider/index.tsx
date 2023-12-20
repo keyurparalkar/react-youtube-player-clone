@@ -5,13 +5,13 @@ import { computeCurrentWidthFromPointerPos } from './utils';
 
 interface SliderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onClick' | 'onDrag' | 'onMouseUp'> {
     total: number;
-    onClick?: (e: React.MouseEvent<HTMLDivElement>, parentLeft: number) => void;
+    onClick?: (currentPercentage: number) => void;
     onDrag?: (completedPercentage: number) => void;
     onMouseUp?: () => void;
 }
 
 export interface SliderRefProps {
-    updateSliderPosition: (completedPercentage: number) => void;
+    updateSliderFill: (completedPercentage: number) => void;
 }
 
 const StyledContainer = styled.div`
@@ -69,14 +69,24 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
     //     elem.style.setProperty('--slider-pointer', `${fillWidth}%`);
     // };
 
+    const updateSliderFillByEvent = (e: React.MouseEvent<HTMLDivElement>) => {
+        const elem = rootRef.current;
+        if (elem) {
+            const rect = elem.getBoundingClientRect();
+
+            const fillWidth = computeCurrentWidthFromPointerPos(e.pageX, rect.left, total);
+            rootRef.current?.style.setProperty('--slider-fill', `${fillWidth}%`);
+            return fillWidth;
+        }
+
+        return 0;
+    };
+
     const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        const elem = e.currentTarget;
-        const rect = elem.getBoundingClientRect();
-
-        const fillWidth = computeCurrentWidthFromPointerPos(e.clientX, rect.left, total);
-        rootRef.current?.style.setProperty('--slider-fill', `${fillWidth}%`);
-
-        onClick?.(e, rect.left);
+        if (rootRef.current) {
+            const width = updateSliderFillByEvent(e);
+            onClick?.(width);
+        }
     };
 
     // Slider Thumb movement logic ===========================
@@ -90,12 +100,8 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
          * To have better dragging experience the data-dragging is removed on the mouseup of .slider
          */
         if (rootRef.current?.getAttribute('data-dragging')) {
-            const elem = rootRef.current;
-            const rect = elem.getBoundingClientRect();
-
-            const fillWidth = computeCurrentWidthFromPointerPos(e.pageX, rect.left, total);
-            rootRef.current?.style.setProperty('--slider-fill', `${fillWidth}%`);
-            onDrag?.(fillWidth);
+            const width = updateSliderFillByEvent(e);
+            onDrag?.(width);
         }
     };
 
@@ -113,7 +119,7 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
         ref,
         () => {
             return {
-                updateSliderPosition(percentageCompleted: number) {
+                updateSliderFill(percentageCompleted: number) {
                     rootRef.current?.style.setProperty('--slider-fill', `${percentageCompleted}%`);
                 },
             };
