@@ -5,6 +5,7 @@ import {
     PLAY_PAUSE,
     UPDATE_HOVERED_DURATION,
     UPDATE_HOVERED_THUMBNAIL_URL,
+    UPDATE_SEEKING,
     UPDATE_VIDEO_CURRENT_TIME,
     VOLUME_CHANGE,
 } from './actions';
@@ -58,6 +59,13 @@ export const playerReducer = (state: StateProps, action: ActionProps) => {
             return {
                 ...state,
                 hoveredThumbnailUrl: action.payload,
+            };
+        }
+
+        case UPDATE_SEEKING: {
+            return {
+                ...state,
+                isSeeking: action.payload,
             };
         }
 

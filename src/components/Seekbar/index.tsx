@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef } from 'react';
 import { PlayerContext, PlayerDispatchContext } from '../../context';
-import { UPDATE_VIDEO_CURRENT_TIME } from '../../context/actions';
+import { UPDATE_SEEKING, UPDATE_VIDEO_CURRENT_TIME } from '../../context/actions';
 import Slider, { SliderRefProps } from '../common/Slider';
 import Tooltip from '../common/Tooltip';
 import FrameTooltip from './FrameTooltip';
@@ -22,6 +22,17 @@ const Seekbar = () => {
             type: UPDATE_VIDEO_CURRENT_TIME,
             payload: { currentTime },
         });
+        dispatch({
+            type: UPDATE_SEEKING,
+            payload: true,
+        });
+    };
+
+    const handleMouseUp = () => {
+        dispatch({
+            type: UPDATE_SEEKING,
+            payload: false,
+        });
     };
 
     const onPositionChangeByClick = (e: React.MouseEvent<HTMLDivElement>, parentLeft: number) => {
@@ -30,6 +41,11 @@ const Seekbar = () => {
         dispatch({
             type: UPDATE_VIDEO_CURRENT_TIME,
             payload: { currentTime: newCurrentTime },
+        });
+
+        dispatch({
+            type: UPDATE_SEEKING,
+            payload: true,
         });
     };
 
@@ -53,7 +69,13 @@ const Seekbar = () => {
                 movingTooltip
                 tooltipStyles={tooltipStyles}
             >
-                <Slider total={800} onClick={onPositionChangeByClick} onDrag={onPositionChangeByDrag} ref={sliderRef} />
+                <Slider
+                    total={800}
+                    onClick={onPositionChangeByClick}
+                    onDrag={onPositionChangeByDrag}
+                    onMouseUp={handleMouseUp}
+                    ref={sliderRef}
+                />
             </Tooltip>
         </div>
     );

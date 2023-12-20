@@ -15,7 +15,8 @@ const VTT_SRC = constructUrl([REACT_APP_BASE_URL, REACT_APP_VTT_URL]);
 const Video = () => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const trackRef = useRef<HTMLTrackElement>(null);
-    const { isPlaying, muted, volume, currentTime, hoveredDuration, hoveredThumbnailUrl } = useContext(PlayerContext);
+    const { isPlaying, muted, volume, currentTime, hoveredDuration, hoveredThumbnailUrl, isSeeking } =
+        useContext(PlayerContext);
     const dispatch = useContext(PlayerDispatchContext);
 
     const onPlayPause = () => {
@@ -24,16 +25,13 @@ const Video = () => {
 
     const handleTimeUpdate = () => {
         // TODO(Keyur): Fix the bug where when video is playing and the user seeks then the currentDuration gets messed
-        if (videoRef.current && isPlaying) {
+        if (videoRef.current && isPlaying && !isSeeking) {
             dispatch({
                 type: UPDATE_VIDEO_CURRENT_TIME,
                 payload: {
                     currentTime: videoRef.current.currentTime,
                 },
             });
-            // const seekSliderFill = (videoRef.current.currentTime / totalDuration) * 100;
-            // const seekbar = document.querySelector('.slider');
-            // seekbar.style.setProperty('--slider-fill', `${seekSliderFill}%`);
         }
     };
 
@@ -61,10 +59,10 @@ const Video = () => {
     }, [volume]);
 
     useEffect(() => {
-        if (videoRef.current && !isPlaying) {
+        if (videoRef.current && (isSeeking || !isPlaying)) {
             videoRef.current.currentTime = currentTime;
         }
-    }, [currentTime, isPlaying]);
+    }, [currentTime, isSeeking]);
 
     useEffect(() => {
         if (trackRef.current) {
@@ -119,6 +117,7 @@ const Video = () => {
                         muted,
                         currentTime: currentTime,
                         duration: videoRef.current ? videoRef.current.duration : 0,
+                        seeking: isSeeking,
                         hoveredDuration,
                         hoveredThumbnailUrl,
                     },

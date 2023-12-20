@@ -3,10 +3,11 @@ import { useRef } from 'react';
 import styled from 'styled-components';
 import { computeCurrentWidthFromPointerPos } from './utils';
 
-interface SliderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onClick' | 'onDrag'> {
+interface SliderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onClick' | 'onDrag' | 'onMouseUp'> {
     total: number;
     onClick?: (e: React.MouseEvent<HTMLDivElement>, parentLeft: number) => void;
     onDrag?: (completedPercentage: number) => void;
+    onMouseUp?: () => void;
 }
 
 export interface SliderRefProps {
@@ -57,7 +58,7 @@ const StyledThumb = styled.div`
 `;
 
 const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
-    const { total, onClick, onDrag } = props;
+    const { total, onClick, onDrag, onMouseUp } = props;
     const rootRef = useRef<HTMLDivElement>(null);
     // const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     //     const elem = e.currentTarget;
@@ -100,6 +101,8 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
 
     const handleContainerMouseUp = () => {
         if (rootRef.current) rootRef.current.removeAttribute('data-dragging');
+
+        onMouseUp?.();
     };
 
     const handleThumbMouseDown = () => {

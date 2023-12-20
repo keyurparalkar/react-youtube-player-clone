@@ -12,6 +12,7 @@ export type StateProps = {
     currentTime: Duration;
     hoveredDuration: Duration;
     hoveredThumbnailUrl: string;
+    isSeeking: boolean;
 };
 
 export type ActionProps = {
@@ -33,6 +34,7 @@ export const initialState: StateProps = {
     currentTime: 0,
     hoveredDuration: 0,
     hoveredThumbnailUrl: '',
+    isSeeking: false,
 };
 
 export const PlayerContext = createContext<StateProps>(initialState);
