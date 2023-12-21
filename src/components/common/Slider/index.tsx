@@ -23,6 +23,18 @@ const StyledContainer = styled.div`
     flex-direction: column;
     justify-content: center;
     cursor: pointer;
+
+    &[data-dragging] {
+        & .slider-thumb {
+            box-shadow: 0px 0px 0px 4px #2689387d;
+        }
+    }
+
+    &:hover {
+        & .slider-thumb {
+            opacity: 1;
+        }
+    }
 `;
 const StyledTrack = styled.div`
     width: 100%;
@@ -55,6 +67,11 @@ const StyledThumb = styled.div`
     bottom: 35%;
     left: var(--slider-fill, 0%);
     transform: translateX(-50%);
+    z-index: 1;
+    opacity: 0;
+    transition:
+        opacity 0.2s ease,
+        box-shadow 0.3s ease;
 `;
 
 const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
