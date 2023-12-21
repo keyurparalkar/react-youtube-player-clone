@@ -10,7 +10,7 @@ const tooltipStyles: React.CSSProperties = {
 };
 
 const Seekbar = () => {
-    const { currentTime, totalDuration, hoveredDuration, hoveredThumbnailUrl } = useContext(PlayerContext);
+    const { currentTime, totalDuration, hoveredDuration, hoveredThumbnailUrl, isSeeking } = useContext(PlayerContext);
     const dispatch = useContext(PlayerDispatchContext);
     const sliderRef = useRef<SliderRefProps>(null);
 
@@ -55,11 +55,11 @@ const Seekbar = () => {
 
     // Update CSS variables that drives the slider component
     useEffect(() => {
-        if (sliderRef.current) {
+        if (sliderRef.current && !isSeeking) {
             const newPosPercentage = (currentTime / totalDuration) * 100;
             sliderRef.current.updateSliderFill(newPosPercentage);
         }
-    }, [currentTime]);
+    }, [currentTime, isSeeking]);
 
     return (
         <div style={{ width: 800 }}>
@@ -70,7 +70,7 @@ const Seekbar = () => {
             >
                 <Slider
                     total={800}
-                    fillColor="#ff0000"
+                    $fillColor="#ff0000"
                     onClick={onPositionChangeByClick}
                     onDrag={onPositionChangeByDrag}
                     onMouseUp={handleMouseUp}

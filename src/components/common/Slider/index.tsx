@@ -6,7 +6,7 @@ import { computeCurrentWidthFromPointerPos } from './utils';
 
 interface SliderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onClick' | 'onDrag' | 'onMouseUp'> {
     total: number;
-    fillColor?: string;
+    $fillColor?: string;
     onClick?: (currentPercentage: number) => void;
     onDrag?: (completedPercentage: number) => void;
     onMouseUp?: () => void;
@@ -16,11 +16,11 @@ export interface SliderRefProps {
     updateSliderFill: (completedPercentage: number) => void;
 }
 
-const StyledContainer = styled.div<Pick<SliderProps, 'fillColor'>>`
+const StyledContainer = styled.div<Pick<SliderProps, '$fillColor'>>`
     --slider-pointer: 0%; // when hover happens pointer is updated
     --slider-fill: 0%; // when click and drag happens fill is updated
     --slider-track-bg-color: ${COLORS.TRACK_BG_COLOR};
-    --slider-fill-color: ${(props) => props.fillColor};
+    --slider-fill-color: ${(props) => props.$fillColor};
 
     position: relative;
     height: 45px;
@@ -105,7 +105,7 @@ const StyledThumb = styled.div`
 `;
 
 const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
-    const { total, onClick, onDrag, onMouseUp, fillColor = COLORS.WHITE } = props;
+    const { total, onClick, onDrag, onMouseUp, $fillColor = COLORS.WHITE } = props;
     const rootRef = useRef<HTMLDivElement>(null);
     // const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     //     const elem = e.currentTarget;
@@ -122,17 +122,19 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
             const rect = elem.getBoundingClientRect();
 
             const fillWidth = computeCurrentWidthFromPointerPos(e.pageX, rect.left, total);
+            if (fillWidth < 0 || fillWidth > 100) {
+                return;
+            }
+
             rootRef.current?.style.setProperty('--slider-fill', `${fillWidth}%`);
             return fillWidth;
         }
-
-        return 0;
     };
 
     const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
         if (rootRef.current) {
             const width = updateSliderFillByEvent(e);
-            onClick?.(width);
+            width && onClick?.(width);
         }
     };
 
@@ -148,7 +150,7 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
          */
         if (rootRef.current?.getAttribute('data-dragging')) {
             const width = updateSliderFillByEvent(e);
-            onDrag?.(width);
+            width && onDrag?.(width);
         }
     };
 
@@ -175,19 +177,17 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
     );
 
     return (
-        <>
-            <StyledContainer
-                className="slider"
-                fillColor={fillColor}
-                onMouseMove={handleContainerMouseMove}
-                onMouseUp={handleContainerMouseUp}
-                ref={rootRef}
-            >
-                <StyledTrack className="slider-track" onClick={handleClick} />
-                <StyledSliderFill className="slider-fill" />
-                <StyledThumb className="slider-thumb" onMouseDown={handleThumbMouseDown}></StyledThumb>
-            </StyledContainer>
-        </>
+        <StyledContainer
+            className="slider"
+            $fillColor={$fillColor}
+            onMouseMove={handleContainerMouseMove}
+            onMouseUp={handleContainerMouseUp}
+            ref={rootRef}
+        >
+            <StyledTrack className="slider-track" onClick={handleClick} />
+            <StyledSliderFill className="slider-fill" />
+            <StyledThumb className="slider-thumb" onMouseDown={handleThumbMouseDown}></StyledThumb>
+        </StyledContainer>
     );
 };
 
