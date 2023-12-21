@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import styled from 'styled-components';
 import MuteButton from './MuteButton';
 import VolumeSlider from './VolumeSlider';
@@ -7,22 +6,19 @@ const StyledVolumeControl = styled.div`
     width: 20%;
     display: flex;
     align-items: center;
+
+    &:hover {
+        & .control--volume-slider {
+            width: 60px;
+        }
+    }
 `;
 
 const VolumeControl = () => {
-    const [isVolumeControlHovered, setIsVolumeControlHovered] = useState(false);
-
-    const onMouseEnter = () => {
-        setIsVolumeControlHovered(true);
-    };
-
-    const onMouseLeave = () => {
-        setIsVolumeControlHovered(false);
-    };
     return (
-        <StyledVolumeControl className="volume-control" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+        <StyledVolumeControl className="volume-control">
             <MuteButton />
-            <VolumeSlider isHovered={isVolumeControlHovered} />
+            <VolumeSlider />
         </StyledVolumeControl>
     );
 };

@@ -15,7 +15,6 @@ const Seekbar = () => {
     const sliderRef = useRef<SliderRefProps>(null);
 
     const onPositionChangeByDrag = (completedPercentage: number) => {
-        // optimize this with --slider-fill;
         const currentTime = (completedPercentage * totalDuration) / 100;
         dispatch({
             type: UPDATE_VIDEO_CURRENT_TIME,
