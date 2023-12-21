@@ -1,10 +1,12 @@
 import React, { forwardRef, Ref, useImperativeHandle } from 'react';
 import { useRef } from 'react';
 import styled from 'styled-components';
+import { COLORS } from './constants';
 import { computeCurrentWidthFromPointerPos } from './utils';
 
 interface SliderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onClick' | 'onDrag' | 'onMouseUp'> {
     total: number;
+    fillColor?: string;
     onClick?: (currentPercentage: number) => void;
     onDrag?: (completedPercentage: number) => void;
     onMouseUp?: () => void;
@@ -14,9 +16,12 @@ export interface SliderRefProps {
     updateSliderFill: (completedPercentage: number) => void;
 }
 
-const StyledContainer = styled.div`
+const StyledContainer = styled.div<Pick<SliderProps, 'fillColor'>>`
     --slider-pointer: 0%; // when hover happens pointer is updated
     --slider-fill: 0%; // when click and drag happens fill is updated
+    --slider-track-bg-color: ${COLORS.TRACK_BG_COLOR};
+    --slider-fill-color: ${(props) => props.fillColor};
+
     position: relative;
     height: 45px;
     display: flex;
@@ -24,29 +29,32 @@ const StyledContainer = styled.div`
     justify-content: center;
     cursor: pointer;
 
+    // For animating ring behind the thumb;
     &[data-dragging] {
-        & .slider-thumb {
-            box-shadow: 0px 0px 0px 4px #2689387d;
+        & .slider-thumb::before {
+            opacity: 1;
         }
     }
 
+    // Make thumb visible when hovered on this container;
     &:hover {
         & .slider-thumb {
             opacity: 1;
         }
     }
 `;
+
 const StyledTrack = styled.div`
     width: 100%;
     height: 5px;
-    background-color: red;
+    background-color: var(--slider-track-bg-color);
     position: absolute;
     pointer-events: auto;
 `;
 
 const StyledSliderFill = styled.div`
     height: 5px;
-    background-color: blue;
+    background-color: var(--slider-fill-color);
     width: var(--slider-fill, 0%);
     position: absolute;
     pointer-events: none;
@@ -62,7 +70,7 @@ const StyledThumb = styled.div`
     height: 15px;
     width: 15px;
     border-radius: 50%;
-    background-color: green;
+    background-color: var(--slider-fill-color);
     position: absolute;
     bottom: 35%;
     left: var(--slider-fill, 0%);
@@ -72,10 +80,32 @@ const StyledThumb = styled.div`
     transition:
         opacity 0.2s ease,
         box-shadow 0.3s ease;
+
+    /**
+     * This psuedo-element adds a ring behind the thumb of lighter color of --slidedr-fill-color.
+     * This ring gets applied when dragging happens i.e. whenever data-dragging attribute is present. Check out the StyledContainer component above.
+     * Articles to read for this:
+     * https://developer.mozilla.org/en-US/docs/Web/CSS/filter
+     * https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/brightness
+     * https://developer.mozilla.org/en-US/docs/Web/CSS/::before
+     * https://developer.mozilla.org/en-US/docs/Web/CSS/transition-property
+     */
+    &::before {
+        content: ' ';
+        display: inline-block;
+        background-color: var(--slider-fill-color);
+        height: 24px;
+        width: 24px;
+        border-radius: 50%;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        filter: opacity(0.5);
+        transform: translate(-18%, -18%);
+    }
 `;
 
 const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
-    const { total, onClick, onDrag, onMouseUp } = props;
+    const { total, onClick, onDrag, onMouseUp, fillColor = COLORS.WHITE } = props;
     const rootRef = useRef<HTMLDivElement>(null);
     // const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     //     const elem = e.currentTarget;
@@ -148,6 +178,7 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
         <>
             <StyledContainer
                 className="slider"
+                fillColor={fillColor}
                 onMouseMove={handleContainerMouseMove}
                 onMouseUp={handleContainerMouseUp}
                 ref={rootRef}

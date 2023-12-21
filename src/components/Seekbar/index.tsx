@@ -70,6 +70,7 @@ const Seekbar = () => {
             >
                 <Slider
                     total={800}
+                    fillColor="#ff0000"
                     onClick={onPositionChangeByClick}
                     onDrag={onPositionChangeByDrag}
                     onMouseUp={handleMouseUp}
