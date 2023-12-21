@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef } from 'react';
 import { PlayerContext, PlayerDispatchContext } from '../../context';
-import { UPDATE_SEEKING, UPDATE_VIDEO_CURRENT_TIME } from '../../context/actions';
+import { UPDATE_HOVERED_DURATION, UPDATE_SEEKING, UPDATE_VIDEO_CURRENT_TIME } from '../../context/actions';
 import Slider, { SliderRefProps } from '../common/Slider';
 import Tooltip from '../common/Tooltip';
 import FrameTooltip from './FrameTooltip';
@@ -47,10 +47,11 @@ const Seekbar = () => {
         });
     };
 
-    // const onMouseMoveParent = (e: React.MouseEvent<HTMLDivElement>, parentLeft: number) => {
-    //     const newCurrentTime = computeVideoDurarionFromSliderPosition(e.pageX, parentLeft, totalDuration, 800);
-    //     dispatch({ type: UPDATE_HOVERED_DURATION, payload: newCurrentTime });
-    // };
+    const handleMouseMove = (pointerPercentage: number) => {
+        const hoveredDuration = (pointerPercentage * totalDuration) / 100;
+
+        dispatch({ type: UPDATE_HOVERED_DURATION, payload: hoveredDuration });
+    };
 
     // Update CSS variables that drives the slider component
     useEffect(() => {
@@ -73,6 +74,7 @@ const Seekbar = () => {
                     onClick={onPositionChangeByClick}
                     onDrag={onPositionChangeByDrag}
                     onMouseUp={handleMouseUp}
+                    onMouseMove={handleMouseMove}
                     ref={sliderRef}
                 />
             </Tooltip>

@@ -4,12 +4,14 @@ import styled from 'styled-components';
 import { COLORS } from './constants';
 import { computeCurrentWidthFromPointerPos } from './utils';
 
-interface SliderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onClick' | 'onDrag' | 'onMouseUp'> {
+interface SliderProps
+    extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onClick' | 'onDrag' | 'onMouseUp' | 'onMouseMove'> {
     total: number;
     $fillColor?: string;
     onClick?: (currentPercentage: number) => void;
     onDrag?: (completedPercentage: number) => void;
     onMouseUp?: () => void;
+    onMouseMove?: (pointerPercentage: number) => void;
 }
 
 export interface SliderRefProps {
@@ -105,7 +107,7 @@ const StyledThumb = styled.div`
 `;
 
 const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
-    const { total, onClick, onDrag, onMouseUp, $fillColor = COLORS.WHITE } = props;
+    const { total, onClick, onDrag, onMouseUp, onMouseMove, $fillColor = COLORS.WHITE } = props;
     const rootRef = useRef<HTMLDivElement>(null);
     // const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     //     const elem = e.currentTarget;
@@ -131,6 +133,21 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
         }
     };
 
+    const updateSliderPointerByEvent = (e: React.MouseEvent<HTMLDivElement>) => {
+        const elem = rootRef.current;
+        if (elem) {
+            const rect = elem.getBoundingClientRect();
+
+            const fillWidth = computeCurrentWidthFromPointerPos(e.pageX, rect.left, total);
+            if (fillWidth < 0 || fillWidth > 100) {
+                return;
+            }
+
+            rootRef.current?.style.setProperty('--slider-pointer', `${fillWidth}%`);
+            return fillWidth;
+        }
+    };
+
     const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
         if (rootRef.current) {
             const width = updateSliderFillByEvent(e);
@@ -152,6 +169,9 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
             const width = updateSliderFillByEvent(e);
             width && onDrag?.(width);
         }
+
+        const pointerPos = updateSliderPointerByEvent(e);
+        pointerPos && onMouseMove?.(pointerPos);
     };
 
     const handleContainerMouseUp = () => {
