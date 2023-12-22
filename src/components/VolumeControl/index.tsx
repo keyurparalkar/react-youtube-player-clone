@@ -5,7 +5,6 @@ import VolumeSlider from './VolumeSlider';
 const StyledVolumeControl = styled.div`
     width: 20%;
     display: flex;
-    align-items: center;
 
     &:hover {
         & .control--volume-slider {

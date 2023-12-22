@@ -25,7 +25,7 @@ const StyledContainer = styled.div<Pick<SliderProps, '$fillColor'>>`
     --slider-fill-color: ${(props) => props.$fillColor};
 
     position: relative;
-    height: 45px;
+    height: 30px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -76,7 +76,7 @@ const StyledThumb = styled.div`
     position: absolute;
     bottom: 35%;
     left: var(--slider-fill, 0%);
-    transform: translateX(-50%);
+    transform: translate(-50%, 15%);
     z-index: 1;
     opacity: 0;
     transition:
@@ -109,14 +109,6 @@ const StyledThumb = styled.div`
 const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
     const { total, onClick, onDrag, onMouseUp, onMouseMove, $fillColor = COLORS.WHITE } = props;
     const rootRef = useRef<HTMLDivElement>(null);
-    // const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    //     const elem = e.currentTarget;
-
-    //     const rect = elem.getBoundingClientRect();
-    //     console.log({ pageX: e.pageX, rectLeft: rect.left });
-    //     const fillWidth = ((e.pageX - rect.left) / 800) * 100;
-    //     elem.style.setProperty('--slider-pointer', `${fillWidth}%`);
-    // };
 
     const updateSliderFillByEvent = (e: React.MouseEvent<HTMLDivElement>) => {
         const elem = rootRef.current;

@@ -62,14 +62,14 @@ const Seekbar = () => {
     }, [currentTime, isSeeking]);
 
     return (
-        <div style={{ width: 800 }}>
+        <div style={{ width: 780 }}>
             <Tooltip
                 content={<FrameTooltip duration={hoveredDuration} thumbnailUrl={hoveredThumbnailUrl} />}
                 movingTooltip
                 tooltipStyles={tooltipStyles}
             >
                 <Slider
-                    total={800}
+                    total={780}
                     $fillColor="#ff0000"
                     onClick={onPositionChangeByClick}
                     onDrag={onPositionChangeByDrag}
