@@ -1,108 +1,80 @@
-import { useAnimate } from 'framer-motion';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { PlayerContext, PlayerDispatchContext } from '../../context';
-import { HAS_VIDEO_SEEKED, UPDATE_HOVERED_DURATION, UPDATE_VIDEO_CURRENT_TIME } from '../../context/actions';
-import ProgressBar from '../common/ProgressBar';
+import { UPDATE_HOVERED_DURATION, UPDATE_SEEKING, UPDATE_VIDEO_CURRENT_TIME } from '../../context/actions';
+import Slider, { SliderRefProps } from '../common/Slider';
 import Tooltip from '../common/Tooltip';
 import FrameTooltip from './FrameTooltip';
-import { computeVideoDurarionFromSliderPosition } from './utils';
 
 const tooltipStyles: React.CSSProperties = {
     backgroundColor: 'transparent',
 };
 
 const Seekbar = () => {
-    const { currentTime, totalDuration, hoveredDuration, hoveredThumbnailUrl } = useContext(PlayerContext);
+    const { currentTime, totalDuration, hoveredDuration, hoveredThumbnailUrl, isSeeking } = useContext(PlayerContext);
     const dispatch = useContext(PlayerDispatchContext);
-    const [sliderRef, sliderAnimate] = useAnimate();
+    const sliderRef = useRef<SliderRefProps>(null);
 
-    const completedTime = currentTime / totalDuration || 0;
-
-    const onPositionChangeByDrag = (e: MouseEvent | TouchEvent | PointerEvent) => {
-        const transformStyle = (e.target as HTMLDivElement)?.style.transform;
-        if (transformStyle && transformStyle !== 'none') {
-            const current = parseFloat(transformStyle.replace(/[^\d.]/g, ''));
-            const currentTime = (current * totalDuration) / 800;
-
-            dispatch({
-                type: UPDATE_VIDEO_CURRENT_TIME,
-                payload: { currentTime },
-            });
-
-            dispatch({
-                type: HAS_VIDEO_SEEKED,
-                payload: true,
-            });
-        }
+    const onPositionChangeByDrag = (completedPercentage: number) => {
+        const currentTime = (completedPercentage * totalDuration) / 100;
+        dispatch({
+            type: UPDATE_VIDEO_CURRENT_TIME,
+            payload: { currentTime },
+        });
+        dispatch({
+            type: UPDATE_SEEKING,
+            payload: true,
+        });
     };
 
-    const onDragEnd = () => {
+    const handleMouseUp = () => {
         dispatch({
-            type: HAS_VIDEO_SEEKED,
+            type: UPDATE_SEEKING,
             payload: false,
         });
     };
 
-    const onPositionChangeByClick = (e: React.MouseEvent<HTMLDivElement>, parentLeft: number) => {
-        const newCurrentTime = computeVideoDurarionFromSliderPosition(e.pageX, parentLeft, totalDuration, 800);
+    const onPositionChangeByClick = (currentPercentage: number) => {
+        const newCurrentTime = (currentPercentage * totalDuration) / 100;
+
         dispatch({
             type: UPDATE_VIDEO_CURRENT_TIME,
             payload: { currentTime: newCurrentTime },
         });
 
-        /**
-         * We make the hasSeeked false when the click is complete
-         * Click is completed when Mouse button moves down and then up.
-         * Click event handlers are executed as follows:
-         * onMouseDown -> onMouseUp -> onClick
-         */
         dispatch({
-            type: HAS_VIDEO_SEEKED,
-            payload: false,
-        });
-    };
-
-    const onMouseDown = () => {
-        dispatch({
-            type: HAS_VIDEO_SEEKED,
+            type: UPDATE_SEEKING,
             payload: true,
         });
     };
 
-    const onMouseMoveParent = (e: React.MouseEvent<HTMLDivElement>, parentLeft: number) => {
-        const newCurrentTime = computeVideoDurarionFromSliderPosition(e.pageX, parentLeft, totalDuration, 800);
-        dispatch({ type: UPDATE_HOVERED_DURATION, payload: newCurrentTime });
+    const handleMouseMove = (pointerPercentage: number) => {
+        const hoveredDuration = (pointerPercentage * totalDuration) / 100;
+
+        dispatch({ type: UPDATE_HOVERED_DURATION, payload: hoveredDuration });
     };
 
+    // Update CSS variables that drives the slider component
     useEffect(() => {
-        if (sliderRef.current) {
-            sliderAnimate(
-                sliderRef.current,
-                {
-                    x: completedTime * 800,
-                },
-                {
-                    ease: 'linear',
-                    duration: 0.1,
-                },
-            );
+        if (sliderRef.current && !isSeeking) {
+            const newPosPercentage = (currentTime / totalDuration) * 100;
+            sliderRef.current.updateSliderFill(newPosPercentage);
         }
-    }, [completedTime]);
+    }, [currentTime, isSeeking]);
 
     return (
-        <div style={{ width: 800 }}>
+        <div style={{ width: 780 }}>
             <Tooltip
                 content={<FrameTooltip duration={hoveredDuration} thumbnailUrl={hoveredThumbnailUrl} />}
                 movingTooltip
                 tooltipStyles={tooltipStyles}
             >
-                <ProgressBar
-                    initialPos={completedTime}
-                    onDragEnd={onDragEnd}
-                    onPositionChangeByDrag={onPositionChangeByDrag}
-                    onPositionChangeByClick={onPositionChangeByClick}
-                    onMouseDown={onMouseDown}
-                    onMouseMoveParent={onMouseMoveParent}
+                <Slider
+                    total={780}
+                    $fillColor="#ff0000"
+                    onClick={onPositionChangeByClick}
+                    onDrag={onPositionChangeByDrag}
+                    onMouseUp={handleMouseUp}
+                    onMouseMove={handleMouseMove}
                     ref={sliderRef}
                 />
             </Tooltip>

@@ -15,7 +15,7 @@ const VTT_SRC = constructUrl([REACT_APP_BASE_URL, REACT_APP_VTT_URL]);
 const Video = () => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const trackRef = useRef<HTMLTrackElement>(null);
-    const { isPlaying, muted, volume, currentTime, hasSeeked, hoveredDuration, hoveredThumbnailUrl } =
+    const { isPlaying, muted, volume, currentTime, hoveredDuration, hoveredThumbnailUrl, isSeeking } =
         useContext(PlayerContext);
     const dispatch = useContext(PlayerDispatchContext);
 
@@ -24,7 +24,7 @@ const Video = () => {
     };
 
     const handleTimeUpdate = () => {
-        if (videoRef.current && !hasSeeked) {
+        if (videoRef.current && isPlaying && !isSeeking) {
             dispatch({
                 type: UPDATE_VIDEO_CURRENT_TIME,
                 payload: {
@@ -58,10 +58,10 @@ const Video = () => {
     }, [volume]);
 
     useEffect(() => {
-        if (videoRef.current) {
+        if (videoRef.current && (isSeeking || !isPlaying)) {
             videoRef.current.currentTime = currentTime;
         }
-    }, [hasSeeked]);
+    }, [currentTime, isSeeking]);
 
     useEffect(() => {
         if (trackRef.current) {
@@ -116,7 +116,7 @@ const Video = () => {
                         muted,
                         currentTime: currentTime,
                         duration: videoRef.current ? videoRef.current.duration : 0,
-                        hasSeeked,
+                        seeking: isSeeking,
                         hoveredDuration,
                         hoveredThumbnailUrl,
                     },

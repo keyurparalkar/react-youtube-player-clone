@@ -1,10 +1,6 @@
 import styled from 'styled-components';
 import VolumeSlider from './VolumeSlider';
 
-export type VolumePanelProps = {
-    isHovered: boolean;
-};
-
 const StyledPanelContainer = styled.div`
     position: relative;
     width: 60px;
@@ -13,10 +9,10 @@ const StyledPanelContainer = styled.div`
     padding-top: 5px;
 `;
 
-const VolumePanel = ({ isHovered }: VolumePanelProps) => {
+const VolumePanel = () => {
     return (
         <StyledPanelContainer>
-            <VolumeSlider isHovered={isHovered} />
+            <VolumeSlider />
         </StyledPanelContainer>
     );
 };
