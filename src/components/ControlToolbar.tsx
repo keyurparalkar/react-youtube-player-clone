@@ -17,6 +17,7 @@ const StyledContainer = styled(motion.div)<{ isPlaying?: boolean }>`
 `;
 const StyledVideoControl = styled.div`
     margin-left: 10px;
+    margin-right: 10px;
 `;
 
 const StyledInteractionGroup1 = styled.div`
