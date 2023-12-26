@@ -13,7 +13,7 @@ const StyledVideoContainer = styled.div`
         opacity: 0;
     }
 
-    &:hover .video-controls {
+    &:hover .video-controls-container {
         opacity: 1;
     }
 `;

@@ -9,6 +9,7 @@ const MuteButton = () => {
     const { muted, volume } = useContext(PlayerContext);
     const dispatch = useContext(PlayerDispatchContext);
 
+    // TODO(Keyur): Remove Framer Dependency
     const controls = useAnimationControls();
 
     const handleMuteClick = () => {
@@ -38,7 +39,7 @@ const MuteButton = () => {
 
     return (
         <Tooltip content={muted ? 'Unmute' : 'Mute'}>
-            <StyledIconButton onClick={handleMuteClick}>
+            <StyledIconButton onClick={handleMuteClick} className="control--mute-button">
                 <svg
                     stroke="currentColor"
                     fill="currentColor"
