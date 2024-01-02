@@ -18,7 +18,9 @@ export interface SliderRefProps {
     updateSliderFill: (completedPercentage: number) => void;
 }
 
-const StyledContainer = styled.div<Pick<SliderProps, '$fillColor'>>`
+type StyledContainerProps = Pick<SliderProps, '$fillColor' | 'total'>;
+
+const StyledContainer = styled.div<StyledContainerProps>`
     --slider-pointer: 0%; // when hover happens pointer is updated
     --slider-fill: 0%; // when click and drag happens fill is updated
     --slider-track-bg-color: ${COLORS.TRACK_BG_COLOR};
@@ -26,6 +28,7 @@ const StyledContainer = styled.div<Pick<SliderProps, '$fillColor'>>`
 
     position: relative;
     height: 30px;
+    width: ${(props) => props.total};
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -195,6 +198,7 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
             onMouseMove={handleContainerMouseMove}
             onMouseUp={handleContainerMouseUp}
             ref={rootRef}
+            total={total}
         >
             <StyledTrack className="slider-track" onClick={handleClick} />
             <StyledSliderFill className="slider-fill" />
