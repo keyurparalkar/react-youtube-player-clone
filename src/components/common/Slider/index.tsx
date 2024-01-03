@@ -2,7 +2,7 @@ import React, { forwardRef, Ref, useImperativeHandle } from 'react';
 import { useRef } from 'react';
 import styled from 'styled-components';
 import { COLORS } from './constants';
-import { computeCurrentWidthFromPointerPos } from './utils';
+import { computeCurrentWidthFromPointerPos, getCSSVariableAbsoluteValue, SliderCSSVariableTypes } from './utils';
 
 interface SliderProps
     extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onClick' | 'onDrag' | 'onMouseUp' | 'onMouseMove'> {
@@ -113,7 +113,7 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
     const { total, onClick, onDrag, onMouseUp, onMouseMove, $fillColor = COLORS.WHITE } = props;
     const rootRef = useRef<HTMLDivElement>(null);
 
-    const updateSliderFillByEvent = (e: React.MouseEvent<HTMLDivElement>) => {
+    const updateSliderFillByEvent = (variableName: SliderCSSVariableTypes, e: React.MouseEvent<HTMLDivElement>) => {
         const elem = rootRef.current;
         if (elem) {
             const rect = elem.getBoundingClientRect();
@@ -123,30 +123,15 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
                 return;
             }
 
-            rootRef.current?.style.setProperty('--slider-fill', `${fillWidth}%`);
-            return fillWidth;
-        }
-    };
-
-    const updateSliderPointerByEvent = (e: React.MouseEvent<HTMLDivElement>) => {
-        const elem = rootRef.current;
-        if (elem) {
-            const rect = elem.getBoundingClientRect();
-
-            const fillWidth = computeCurrentWidthFromPointerPos(e.pageX, rect.left, total);
-            if (fillWidth < 0 || fillWidth > 100) {
-                return;
-            }
-
-            rootRef.current?.style.setProperty('--slider-pointer', `${fillWidth}%`);
-            return fillWidth;
+            rootRef.current?.style.setProperty(variableName, `${fillWidth}%`);
         }
     };
 
     const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
         if (rootRef.current) {
-            const width = updateSliderFillByEvent(e);
-            width && onClick?.(width);
+            updateSliderFillByEvent('--slider-fill', e);
+            const width = getCSSVariableAbsoluteValue('--slider-fill', rootRef);
+            onClick?.(width);
         }
     };
 
@@ -161,12 +146,14 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
          * To have better dragging experience the data-dragging is removed on the mouseup of .slider
          */
         if (rootRef.current?.getAttribute('data-dragging')) {
-            const width = updateSliderFillByEvent(e);
-            width && onDrag?.(width);
+            updateSliderFillByEvent('--slider-fill', e);
+            const width = getCSSVariableAbsoluteValue('--slider-fill', rootRef);
+            onDrag?.(width);
         }
 
-        const pointerPos = updateSliderPointerByEvent(e);
-        pointerPos && onMouseMove?.(pointerPos);
+        updateSliderFillByEvent('--slider-pointer', e);
+        const pointerPos = getCSSVariableAbsoluteValue('--slider-pointer', rootRef);
+        onMouseMove?.(pointerPos);
     };
 
     const handleContainerMouseUp = () => {

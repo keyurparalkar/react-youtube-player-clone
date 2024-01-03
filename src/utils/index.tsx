@@ -17,3 +17,5 @@ export const StyledIconButton = styled.button<IconButtonProps>`
 export const constructUrl = (urls: Array<string | undefined>) => {
     return urls.reduce((acc: string, url) => acc + (url ?? ''), '');
 };
+
+export const numberToFixed = (num: number, fixedPos: number) => Number(num.toFixed(fixedPos));

@@ -1,6 +1,7 @@
 import { useContext, useEffect, useRef } from 'react';
 import { PlayerContext, PlayerDispatchContext } from '../../context';
 import { UPDATE_HOVERED_DURATION, UPDATE_SEEKING, UPDATE_VIDEO_CURRENT_TIME } from '../../context/actions';
+import { numberToFixed } from '../../utils';
 import Slider, { SliderRefProps } from '../common/Slider';
 import Tooltip from '../common/Tooltip';
 import FrameTooltip from './FrameTooltip';
@@ -15,7 +16,9 @@ const Seekbar = () => {
     const sliderRef = useRef<SliderRefProps>(null);
 
     const onPositionChangeByDrag = (completedPercentage: number) => {
-        const currentTime = (completedPercentage * totalDuration) / 100;
+        let currentTime = (completedPercentage * totalDuration) / 100;
+        currentTime = numberToFixed(currentTime, 4);
+
         dispatch({
             type: UPDATE_VIDEO_CURRENT_TIME,
             payload: { currentTime },
@@ -34,7 +37,8 @@ const Seekbar = () => {
     };
 
     const onPositionChangeByClick = (currentPercentage: number) => {
-        const newCurrentTime = (currentPercentage * totalDuration) / 100;
+        let newCurrentTime = (currentPercentage * totalDuration) / 100;
+        newCurrentTime = numberToFixed(newCurrentTime, 2);
 
         dispatch({
             type: UPDATE_VIDEO_CURRENT_TIME,
@@ -48,8 +52,8 @@ const Seekbar = () => {
     };
 
     const handleMouseMove = (pointerPercentage: number) => {
-        const hoveredDuration = (pointerPercentage * totalDuration) / 100;
-
+        let hoveredDuration = (pointerPercentage * totalDuration) / 100;
+        hoveredDuration = numberToFixed(hoveredDuration, 2);
         dispatch({ type: UPDATE_HOVERED_DURATION, payload: hoveredDuration });
     };
 

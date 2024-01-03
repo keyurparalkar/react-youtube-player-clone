@@ -1,3 +1,5 @@
+import { numberToFixed } from '../../../utils';
+
 /**
  * Computes the width in percentage for the slider fill track
  * @param xDistance: This can be clientX or pageX
@@ -6,4 +8,18 @@
  * @returns: width in percentage;
  */
 export const computeCurrentWidthFromPointerPos = (xDistance: number, left: number, totalWidth: number) =>
-    ((xDistance - left) / totalWidth) * 100;
+    numberToFixed(((xDistance - left) / totalWidth) * 100, 2);
+
+export type SliderCSSVariableTypes = '--slider-fill' | '--slider-pointer';
+
+export const getCSSVariableValue = (variableName: SliderCSSVariableTypes, ref: React.RefObject<HTMLDivElement>) => {
+    return ref.current?.style.getPropertyValue(variableName) || '0%';
+};
+
+export const getCSSVariableAbsoluteValue = (
+    variableName: SliderCSSVariableTypes,
+    ref: React.RefObject<HTMLDivElement>,
+) => {
+    const value = getCSSVariableValue(variableName, ref);
+    return Number(value.split('%')[0]);
+};
