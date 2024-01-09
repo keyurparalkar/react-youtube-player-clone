@@ -13,6 +13,7 @@ export type StateProps = {
     hoveredDuration: Duration;
     hoveredThumbnailUrl: string;
     isSeeking: boolean;
+    chapters: string[] | [];
 };
 
 export type ActionProps = {
@@ -35,6 +36,7 @@ export const initialState: StateProps = {
     hoveredDuration: 0,
     hoveredThumbnailUrl: '',
     isSeeking: false,
+    chapters: [],
 };
 
 export const PlayerContext = createContext<StateProps>(initialState);

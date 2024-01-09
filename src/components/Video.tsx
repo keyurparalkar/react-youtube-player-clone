@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef } from 'react';
-import { PlayerContext, PlayerDispatchContext } from '../context';
+import { PlayerContext, PlayerDispatchContext, StateProps } from '../context';
 import {
     HAS_VIDEO_LOADED,
     PLAY_PAUSE,
@@ -13,12 +13,14 @@ const VIDEO_SRC = constructUrl([REACT_APP_BASE_URL, REACT_APP_VIDEO_URL]);
 const VTT_SRC = constructUrl([REACT_APP_BASE_URL, REACT_APP_VTT_URL]);
 const CHAPTERS_VTT_SRC = constructUrl([REACT_APP_BASE_URL, REACT_APP_CHAPTERS_URL]);
 
+type OnLoadType = Partial<StateProps>;
+
 const Video = () => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const trackMetaDataRef = useRef<HTMLTrackElement>(null);
     const trackChaptersRef = useRef<HTMLTrackElement>(null);
 
-    const { isPlaying, muted, volume, currentTime, hoveredDuration, hoveredThumbnailUrl, isSeeking } =
+    const { isPlaying, muted, volume, currentTime, hoveredDuration, hoveredThumbnailUrl, isSeeking, chapters } =
         useContext(PlayerContext);
     const dispatch = useContext(PlayerDispatchContext);
 
@@ -85,12 +87,22 @@ const Video = () => {
         if (video) {
             video.addEventListener('loadeddata', () => {
                 //TODO(Keyur): Load frametrack details in the store
+                const payload: OnLoadType = {
+                    hasVideoLoaded: true,
+                    totalDuration: video.duration,
+                };
+
+                if (trackChaptersRef.current) {
+                    const { track } = trackChaptersRef.current;
+                    const cues = track.cues;
+                    if (cues) {
+                        payload['chapters'] = (Object.values(cues) as VTTCue[]).map((cue: VTTCue) => cue.text);
+                    }
+                }
+
                 dispatch({
                     type: HAS_VIDEO_LOADED,
-                    payload: {
-                        hasVideoLoaded: true,
-                        totalDuration: video.duration,
-                    },
+                    payload,
                 });
             });
         }
@@ -123,6 +135,7 @@ const Video = () => {
                         seeking: isSeeking,
                         hoveredDuration,
                         hoveredThumbnailUrl,
+                        chapters,
                     },
                     null,
                     2,

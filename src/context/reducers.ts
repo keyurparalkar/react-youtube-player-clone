@@ -38,6 +38,7 @@ export const playerReducer = (state: StateProps, action: ActionProps) => {
                 ...state,
                 hasVideoLoaded: action.payload,
                 totalDuration: action.payload.totalDuration,
+                chapters: action.payload.chapters,
             };
         }
 
