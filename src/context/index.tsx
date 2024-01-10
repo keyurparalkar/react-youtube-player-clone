@@ -13,7 +13,7 @@ export type StateProps = {
     hoveredDuration: Duration;
     hoveredThumbnailUrl: string;
     isSeeking: boolean;
-    chapters: string[] | [];
+    chapters: Array<{ chapterName: string; percentageTime: string }> | [];
 };
 
 export type ActionProps = {

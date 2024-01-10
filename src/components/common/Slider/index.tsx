@@ -1,12 +1,14 @@
 import React, { forwardRef, Ref, useImperativeHandle } from 'react';
 import { useRef } from 'react';
 import styled from 'styled-components';
+import { StateProps } from '../../../context';
 import { COLORS } from './constants';
 import { computeCurrentWidthFromPointerPos, getCSSVariableAbsoluteValue, SliderCSSVariableTypes } from './utils';
 
 interface SliderProps
     extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onClick' | 'onDrag' | 'onMouseUp' | 'onMouseMove'> {
-    total: number;
+    $total: number;
+    $chapters?: StateProps['chapters'];
     $fillColor?: string;
     onClick?: (currentPercentage: number) => void;
     onDrag?: (completedPercentage: number) => void;
@@ -18,7 +20,7 @@ export interface SliderRefProps {
     updateSliderFill: (completedPercentage: number) => void;
 }
 
-type StyledContainerProps = Pick<SliderProps, '$fillColor' | 'total'>;
+type StyledContainerProps = Pick<SliderProps, '$fillColor' | '$total'>;
 
 const StyledContainer = styled.div<StyledContainerProps>`
     --slider-pointer: 0%; // when hover happens pointer is updated
@@ -28,9 +30,9 @@ const StyledContainer = styled.div<StyledContainerProps>`
 
     position: relative;
     height: 30px;
-    width: ${(props) => props.total};
+    width: ${(props) => props.$total};
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
     cursor: pointer;
 
@@ -42,10 +44,10 @@ const StyledContainer = styled.div<StyledContainerProps>`
     }
 
     // Make thumb visible when hovered on this container;
+    & .slider-thumb {
+        opacity: 1;
+    }
     &:hover {
-        & .slider-thumb {
-            opacity: 1;
-        }
     }
 `;
 
@@ -60,7 +62,7 @@ const StyledTrack = styled.div`
 const StyledSliderFill = styled.div`
     height: 5px;
     background-color: var(--slider-fill-color);
-    width: var(--slider-fill, 0%);
+    width: var(--chapter-fill, 0%);
     position: absolute;
     pointer-events: none;
     /** https://developer.mozilla.org/en-US/docs/Web/CSS/pointer-events#none
@@ -77,7 +79,7 @@ const StyledThumb = styled.div`
     border-radius: 50%;
     background-color: var(--slider-fill-color);
     position: absolute;
-    bottom: 35%;
+    /* bottom: 35%; */
     left: var(--slider-fill, 0%);
     transform: translate(-50%, 15%);
     z-index: 1;
@@ -110,7 +112,7 @@ const StyledThumb = styled.div`
 `;
 
 const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
-    const { total, onClick, onDrag, onMouseUp, onMouseMove, $fillColor = COLORS.WHITE } = props;
+    const { $chapters, $total, onClick, onDrag, onMouseUp, onMouseMove, $fillColor = COLORS.WHITE } = props;
     const rootRef = useRef<HTMLDivElement>(null);
 
     const updateSliderFillByEvent = (variableName: SliderCSSVariableTypes, e: React.MouseEvent<HTMLDivElement>) => {
@@ -118,7 +120,7 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
         if (elem) {
             const rect = elem.getBoundingClientRect();
 
-            const fillWidth = computeCurrentWidthFromPointerPos(e.pageX, rect.left, total);
+            const fillWidth = computeCurrentWidthFromPointerPos(e.pageX, rect.left, $total);
             if (fillWidth < 0 || fillWidth > 100) {
                 return;
             }
@@ -185,10 +187,46 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
             onMouseMove={handleContainerMouseMove}
             onMouseUp={handleContainerMouseUp}
             ref={rootRef}
-            total={total}
+            $total={$total}
         >
-            <StyledTrack className="slider-track" onClick={handleClick} />
-            <StyledSliderFill className="slider-fill" />
+            {$chapters && $chapters.length > 0 ? (
+                $chapters.map((chapter, index) => (
+                    <div
+                        key={`key-${chapter.percentageTime}`}
+                        style={{
+                            width: `${chapter.percentageTime}%`,
+                            height: '5px',
+                            display: 'inline-block',
+                            marginRight: '10px',
+                            position: 'relative',
+                        }}
+                        onMouseMove={(e: React.MouseEvent<HTMLDivElement>) => {
+                            // console.log({ pageX: e.pageX, rect: e.target.getBoundingClientRect() });
+                            if (rootRef.current && rootRef.current.getAttribute('data-dragging')) {
+                                const elem = e.currentTarget;
+                                const rect = elem.getBoundingClientRect();
+                                const totalChapterWidth = (Number(chapter.percentageTime) * $total) / 100;
+
+                                const chapterFillWidth = computeCurrentWidthFromPointerPos(
+                                    e.pageX,
+                                    rect.left,
+                                    totalChapterWidth,
+                                );
+                                elem.style.setProperty('--chapter-fill', `${chapterFillWidth}%`);
+                            }
+                        }}
+                    >
+                        <StyledTrack className="slider-track" onClick={handleClick} />
+                        <StyledSliderFill className="slider-fill" style={{ backgroundColor: `#FF${index}E33` }} />
+                    </div>
+                ))
+            ) : (
+                <>
+                    <StyledTrack className="slider-track" onClick={handleClick} />
+                    <StyledSliderFill className="slider-fill" />
+                </>
+            )}
+
             <StyledThumb className="slider-thumb" onMouseDown={handleThumbMouseDown}></StyledThumb>
         </StyledContainer>
     );

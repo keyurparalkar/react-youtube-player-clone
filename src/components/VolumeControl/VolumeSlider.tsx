@@ -46,7 +46,7 @@ const VolumeSlider = () => {
     return (
         <Tooltip content="Volume">
             <StyledContainer className="control--volume-slider">
-                <Slider total={60} onClick={onPositionChangeByClick} onDrag={onPositionChangeByDrag} ref={sliderRef} />
+                <Slider $total={60} onClick={onPositionChangeByClick} onDrag={onPositionChangeByDrag} ref={sliderRef} />
             </StyledContainer>
         </Tooltip>
     );

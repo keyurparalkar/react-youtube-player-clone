@@ -96,7 +96,10 @@ const Video = () => {
                     const { track } = trackChaptersRef.current;
                     const cues = track.cues;
                     if (cues) {
-                        payload['chapters'] = (Object.values(cues) as VTTCue[]).map((cue: VTTCue) => cue.text);
+                        payload['chapters'] = (Object.values(cues) as VTTCue[]).map((cue: VTTCue) => ({
+                            chapterName: cue.text,
+                            percentageTime: (((cue.endTime - cue.startTime) / video.duration) * 100).toFixed(2),
+                        }));
                     }
                 }
 
