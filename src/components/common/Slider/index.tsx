@@ -79,7 +79,7 @@ const StyledThumb = styled.div`
     border-radius: 50%;
     background-color: var(--slider-fill-color);
     position: absolute;
-    /* bottom: 35%; */
+    bottom: 45%;
     left: var(--slider-fill, 0%);
     transform: translate(-50%, 15%);
     z-index: 1;
@@ -114,6 +114,7 @@ const StyledThumb = styled.div`
 const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
     const { $chapters, $total, onClick, onDrag, onMouseUp, onMouseMove, $fillColor = COLORS.WHITE } = props;
     const rootRef = useRef<HTMLDivElement>(null);
+    // const chapterPointerRef = useRef<number>(0);
 
     const updateSliderFillByEvent = (variableName: SliderCSSVariableTypes, e: React.MouseEvent<HTMLDivElement>) => {
         const elem = rootRef.current;
@@ -200,20 +201,21 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
                             marginRight: '10px',
                             position: 'relative',
                         }}
-                        onMouseMove={(e: React.MouseEvent<HTMLDivElement>) => {
+                        onMouseMove={() => {
                             // console.log({ pageX: e.pageX, rect: e.target.getBoundingClientRect() });
-                            if (rootRef.current && rootRef.current.getAttribute('data-dragging')) {
-                                const elem = e.currentTarget;
-                                const rect = elem.getBoundingClientRect();
-                                const totalChapterWidth = (Number(chapter.percentageTime) * $total) / 100;
-
-                                const chapterFillWidth = computeCurrentWidthFromPointerPos(
-                                    e.pageX,
-                                    rect.left,
-                                    totalChapterWidth,
-                                );
-                                elem.style.setProperty('--chapter-fill', `${chapterFillWidth}%`);
-                            }
+                            // if (rootRef.current && rootRef.current.getAttribute('data-dragging')) {
+                            //     const elem = e.currentTarget;
+                            //     const rect = elem.getBoundingClientRect();
+                            //     const totalChapterWidth = (Number(chapter.percentageTime) * $total) / 100;
+                            //     const chapterFillWidth = computeCurrentWidthFromPointerPos(
+                            //         e.pageX,
+                            //         rect.left,
+                            //         totalChapterWidth,
+                            //     );
+                            //     elem.style.setProperty('--chapter-fill', `${chapterFillWidth}%`);
+                            // }
+                            // console.log('Chapter = ', chapter.index);
+                            // chapterPointerRef.current = chapter.index;
                         }}
                     >
                         <StyledTrack className="slider-track" onClick={handleClick} />
