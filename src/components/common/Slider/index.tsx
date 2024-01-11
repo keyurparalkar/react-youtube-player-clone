@@ -1,4 +1,4 @@
-import React, { forwardRef, Ref, useImperativeHandle } from 'react';
+import React, { ElementRef, forwardRef, Ref, useImperativeHandle } from 'react';
 import { useRef } from 'react';
 import styled from 'styled-components';
 import { StateProps } from '../../../context';
@@ -8,6 +8,7 @@ import { computeCurrentWidthFromPointerPos, getCSSVariableAbsoluteValue, SliderC
 interface SliderProps
     extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onClick' | 'onDrag' | 'onMouseUp' | 'onMouseMove'> {
     $total: number;
+    $currentTime?: number;
     $chapters?: StateProps['chapters'];
     $fillColor?: string;
     onClick?: (currentPercentage: number) => void;
@@ -22,6 +23,10 @@ export interface SliderRefProps {
 
 type StyledContainerProps = Pick<SliderProps, '$fillColor' | '$total'>;
 
+type StyledChapterContainerProps = {
+    $width: string;
+};
+
 const StyledContainer = styled.div<StyledContainerProps>`
     --slider-pointer: 0%; // when hover happens pointer is updated
     --slider-fill: 0%; // when click and drag happens fill is updated
@@ -34,6 +39,7 @@ const StyledContainer = styled.div<StyledContainerProps>`
     display: flex;
     flex-direction: row;
     justify-content: center;
+    align-items: center;
     cursor: pointer;
 
     // For animating ring behind the thumb;
@@ -44,11 +50,19 @@ const StyledContainer = styled.div<StyledContainerProps>`
     }
 
     // Make thumb visible when hovered on this container;
-    & .slider-thumb {
-        opacity: 1;
-    }
     &:hover {
+        & .slider-thumb {
+            opacity: 1;
+        }
     }
+`;
+
+const StyleChapterContainer = styled.div<StyledChapterContainerProps>`
+    width: ${(props) => props.$width};
+    height: 5px;
+    display: inline-block;
+    margin-right: 2px;
+    position: relative;
 `;
 
 const StyledTrack = styled.div`
@@ -79,7 +93,7 @@ const StyledThumb = styled.div`
     border-radius: 50%;
     background-color: var(--slider-fill-color);
     position: absolute;
-    bottom: 45%;
+    bottom: 33%;
     left: var(--slider-fill, 0%);
     transform: translate(-50%, 15%);
     z-index: 1;
@@ -112,9 +126,18 @@ const StyledThumb = styled.div`
 `;
 
 const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
-    const { $chapters, $total, onClick, onDrag, onMouseUp, onMouseMove, $fillColor = COLORS.WHITE } = props;
+    const {
+        $currentTime,
+        $chapters,
+        $total,
+        onClick,
+        onDrag,
+        onMouseUp,
+        onMouseMove,
+        $fillColor = COLORS.WHITE,
+    } = props;
     const rootRef = useRef<HTMLDivElement>(null);
-    // const chapterPointerRef = useRef<number>(0);
+    const chapterRefs = useRef<Array<ElementRef<'div'>> | []>([]);
 
     const updateSliderFillByEvent = (variableName: SliderCSSVariableTypes, e: React.MouseEvent<HTMLDivElement>) => {
         const elem = rootRef.current;
@@ -150,8 +173,26 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
          */
         if (rootRef.current?.getAttribute('data-dragging')) {
             updateSliderFillByEvent('--slider-fill', e);
-            const width = getCSSVariableAbsoluteValue('--slider-fill', rootRef);
-            onDrag?.(width);
+            const sliderFillWidth = getCSSVariableAbsoluteValue('--slider-fill', rootRef);
+            onDrag?.(sliderFillWidth);
+
+            const currentChapter = $chapters?.filter(
+                (chapter) => $currentTime && $currentTime > chapter.startTime && $currentTime < chapter.endTime,
+            );
+
+            // When chapters exists update the chapter fills for each div.
+            if (currentChapter && currentChapter?.length > 0) {
+                const { index, percentageTime } = currentChapter[0];
+                const currentChapterElem = chapterRefs.current[index];
+
+                const rect = currentChapterElem.getBoundingClientRect();
+                const totalChapterWidth = (Number(percentageTime) * $total) / 100;
+                const chapterFillWidth = computeCurrentWidthFromPointerPos(e.pageX, rect.left, totalChapterWidth);
+                if (chapterFillWidth < 0 || chapterFillWidth > 100) {
+                    return;
+                }
+                currentChapterElem.style.setProperty('--chapter-fill', `${chapterFillWidth}%`);
+            }
         }
 
         updateSliderFillByEvent('--slider-pointer', e);
@@ -192,35 +233,14 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
         >
             {$chapters && $chapters.length > 0 ? (
                 $chapters.map((chapter, index) => (
-                    <div
+                    <StyleChapterContainer
                         key={`key-${chapter.percentageTime}`}
-                        style={{
-                            width: `${chapter.percentageTime}%`,
-                            height: '5px',
-                            display: 'inline-block',
-                            marginRight: '10px',
-                            position: 'relative',
-                        }}
-                        onMouseMove={() => {
-                            // console.log({ pageX: e.pageX, rect: e.target.getBoundingClientRect() });
-                            // if (rootRef.current && rootRef.current.getAttribute('data-dragging')) {
-                            //     const elem = e.currentTarget;
-                            //     const rect = elem.getBoundingClientRect();
-                            //     const totalChapterWidth = (Number(chapter.percentageTime) * $total) / 100;
-                            //     const chapterFillWidth = computeCurrentWidthFromPointerPos(
-                            //         e.pageX,
-                            //         rect.left,
-                            //         totalChapterWidth,
-                            //     );
-                            //     elem.style.setProperty('--chapter-fill', `${chapterFillWidth}%`);
-                            // }
-                            // console.log('Chapter = ', chapter.index);
-                            // chapterPointerRef.current = chapter.index;
-                        }}
+                        ref={(el: HTMLDivElement) => el && (chapterRefs.current[index] = el)}
+                        $width={`${chapter.percentageTime}%`}
                     >
                         <StyledTrack className="slider-track" onClick={handleClick} />
-                        <StyledSliderFill className="slider-fill" style={{ backgroundColor: `#FF${index}E33` }} />
-                    </div>
+                        <StyledSliderFill className="slider-fill" />
+                    </StyleChapterContainer>
                 ))
             ) : (
                 <>

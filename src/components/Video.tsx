@@ -99,6 +99,8 @@ const Video = () => {
                         payload['chapters'] = (Object.values(cues) as VTTCue[]).map((cue: VTTCue, index) => ({
                             index,
                             chapterName: cue.text,
+                            endTime: cue.endTime,
+                            startTime: cue.startTime,
                             percentageTime: (((cue.endTime - cue.startTime) / video.duration) * 100).toFixed(2),
                         }));
                     }

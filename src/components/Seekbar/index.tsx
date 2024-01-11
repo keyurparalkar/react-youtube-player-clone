@@ -75,6 +75,7 @@ const Seekbar = () => {
             >
                 <Slider
                     $chapters={chapters}
+                    $currentTime={currentTime}
                     $total={780}
                     $fillColor="#ff0000"
                     onClick={onPositionChangeByClick}
