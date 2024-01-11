@@ -55,6 +55,11 @@ const StyledContainer = styled.div<StyledContainerProps>`
             opacity: 1;
         }
     }
+
+    // While chapter is getting hovered:
+    &[data-chapters-hover] {
+        height: 8px;
+    }
 `;
 
 const StyleChapterContainer = styled.div<StyledChapterContainerProps>`
@@ -63,6 +68,15 @@ const StyleChapterContainer = styled.div<StyledChapterContainerProps>`
     display: inline-block;
     margin-right: 2px;
     position: relative;
+    transition: height 200ms ease;
+
+    &[data-chapter-dragging] {
+        height: 8px;
+
+        & > div {
+            height: 8px;
+        }
+    }
 `;
 
 const StyledTrack = styled.div`
@@ -71,6 +85,8 @@ const StyledTrack = styled.div`
     background-color: var(--slider-track-bg-color);
     position: absolute;
     pointer-events: auto;
+
+    transition: height 200ms ease;
 `;
 
 const StyledSliderFill = styled.div`
@@ -189,9 +205,14 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
                 const totalChapterWidth = (Number(percentageTime) * $total) / 100;
                 const chapterFillWidth = computeCurrentWidthFromPointerPos(e.pageX, rect.left, totalChapterWidth);
                 if (chapterFillWidth < 0 || chapterFillWidth > 100) {
+                    index > 0 && chapterRefs.current[index - 1].removeAttribute('data-chapter-dragging');
+
+                    // chapterFillWidth < 0 && chapterRefs.current[index + 1].removeAttribute('data-chapter-dragging');
+                    // TODO(Keyur): data-chapter-draggin attribute should get removed when going from right to left.
                     return;
                 }
                 currentChapterElem.style.setProperty('--chapter-fill', `${chapterFillWidth}%`);
+                currentChapterElem.setAttribute('data-chapter-dragging', 'true');
             }
         }
 
@@ -201,13 +222,17 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
     };
 
     const handleContainerMouseUp = () => {
-        if (rootRef.current) rootRef.current.removeAttribute('data-dragging');
+        if (rootRef.current) {
+            rootRef.current.removeAttribute('data-dragging');
+        }
 
         onMouseUp?.();
     };
 
     const handleThumbMouseDown = () => {
-        if (rootRef.current) rootRef.current.setAttribute('data-dragging', 'true');
+        if (rootRef.current) {
+            rootRef.current.setAttribute('data-dragging', 'true');
+        }
     };
 
     useImperativeHandle(
@@ -234,6 +259,7 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
             {$chapters && $chapters.length > 0 ? (
                 $chapters.map((chapter, index) => (
                     <StyleChapterContainer
+                        className={`chapter-${index}`}
                         key={`key-${chapter.percentageTime}`}
                         ref={(el: HTMLDivElement) => el && (chapterRefs.current[index] = el)}
                         $width={`${chapter.percentageTime}%`}
