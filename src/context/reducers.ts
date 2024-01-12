@@ -36,7 +36,7 @@ export const playerReducer = (state: StateProps, action: ActionProps) => {
         case HAS_VIDEO_LOADED: {
             return {
                 ...state,
-                hasVideoLoaded: action.payload,
+                hasVideoLoaded: action.payload.hasVideoLoaded,
                 totalDuration: action.payload.totalDuration,
             };
         }

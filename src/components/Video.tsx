@@ -15,8 +15,17 @@ const VTT_SRC = constructUrl([REACT_APP_BASE_URL, REACT_APP_VTT_URL]);
 const Video = () => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const trackRef = useRef<HTMLTrackElement>(null);
-    const { isPlaying, muted, volume, currentTime, hoveredDuration, hoveredThumbnailUrl, isSeeking } =
-        useContext(PlayerContext);
+    const {
+        isPlaying,
+        muted,
+        volume,
+        currentTime,
+        hoveredDuration,
+        hoveredThumbnailUrl,
+        isSeeking,
+        totalDuration,
+        hasVideoLoaded,
+    } = useContext(PlayerContext);
     const dispatch = useContext(PlayerDispatchContext);
 
     const onPlayPause = () => {
@@ -115,10 +124,11 @@ const Video = () => {
                         volume,
                         muted,
                         currentTime: currentTime,
-                        duration: videoRef.current ? videoRef.current.duration : 0,
+                        totalDuration,
                         seeking: isSeeking,
                         hoveredDuration,
                         hoveredThumbnailUrl,
+                        hasVideoLoaded,
                     },
                     null,
                     2,
