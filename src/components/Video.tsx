@@ -20,8 +20,18 @@ const Video = () => {
     const trackMetaDataRef = useRef<HTMLTrackElement>(null);
     const trackChaptersRef = useRef<HTMLTrackElement>(null);
 
-    const { isPlaying, muted, volume, currentTime, hoveredDuration, hoveredThumbnailUrl, isSeeking, chapters } =
-        useContext(PlayerContext);
+    const {
+        isPlaying,
+        muted,
+        volume,
+        currentTime,
+        hoveredDuration,
+        hoveredThumbnailUrl,
+        isSeeking,
+        totalDuration,
+        hasVideoLoaded,
+        chapters,
+    } = useContext(PlayerContext);
     const dispatch = useContext(PlayerDispatchContext);
 
     const onPlayPause = () => {
@@ -137,11 +147,12 @@ const Video = () => {
                         volume,
                         muted,
                         currentTime: currentTime,
-                        duration: videoRef.current ? videoRef.current.duration : 0,
+                        totalDuration,
                         seeking: isSeeking,
                         hoveredDuration,
                         hoveredThumbnailUrl,
                         chapters,
+                        hasVideoLoaded,
                     },
                     null,
                     2,
