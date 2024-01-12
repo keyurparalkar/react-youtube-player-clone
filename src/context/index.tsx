@@ -3,6 +3,14 @@ import { playerReducer } from './reducers';
 
 export type Duration = number;
 
+export type Chapter = {
+    index: number;
+    chapterName: string;
+    percentageTime: string;
+    endTime: number;
+    startTime: number;
+};
+
 export type StateProps = {
     isPlaying: boolean;
     muted: boolean;
@@ -13,9 +21,7 @@ export type StateProps = {
     hoveredDuration: Duration;
     hoveredThumbnailUrl: string;
     isSeeking: boolean;
-    chapters:
-        | Array<{ index: number; chapterName: string; percentageTime: string; endTime: number; startTime: number }>
-        | [];
+    chapters: Array<Chapter> | [];
 };
 
 export type ActionProps = {

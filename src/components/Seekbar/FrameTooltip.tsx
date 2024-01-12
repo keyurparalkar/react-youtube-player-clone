@@ -14,6 +14,7 @@ dayjs.extend(duration);
 type FrameTooltipProps = {
     duration: Duration;
     thumbnailUrl: string;
+    chapterName?: string;
 };
 
 type ImageProps = {
@@ -42,7 +43,7 @@ const StyledImage = styled.div<ImageProps>`
 `;
 
 const FrameTooltip = (props: FrameTooltipProps) => {
-    const { duration, thumbnailUrl } = props;
+    const { duration, thumbnailUrl, chapterName = '' } = props;
     let spriteImageName;
     let dims;
 
@@ -68,6 +69,7 @@ const FrameTooltip = (props: FrameTooltipProps) => {
             ) : (
                 <img src="" style={{ backgroundColor: 'white', width: 200, height: 83 }} />
             )}
+            <span>{chapterName}</span>
             <span>{formattedDuration}</span>
         </StyledSnapshotContainer>
     );

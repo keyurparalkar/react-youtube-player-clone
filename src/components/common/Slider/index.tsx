@@ -1,7 +1,7 @@
 import React, { ElementRef, forwardRef, Ref, useImperativeHandle } from 'react';
 import { useRef } from 'react';
 import styled from 'styled-components';
-import { StateProps } from '../../../context';
+import { Chapter } from '../../../context';
 import { COLORS } from './constants';
 import { computeCurrentWidthFromPointerPos, getCSSVariableAbsoluteValue, SliderCSSVariableTypes } from './utils';
 
@@ -9,7 +9,8 @@ interface SliderProps
     extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onClick' | 'onDrag' | 'onMouseUp' | 'onMouseMove'> {
     $total: number;
     $currentTime?: number;
-    $chapters?: StateProps['chapters'];
+    $currentChapter?: Chapter;
+    $chapters?: Chapter[];
     $fillColor?: string;
     onClick?: (currentPercentage: number) => void;
     onDrag?: (completedPercentage: number) => void;
@@ -145,6 +146,7 @@ const StyledThumb = styled.div`
 
 const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
     const {
+        $currentChapter,
         $currentTime,
         $chapters,
         $total,
@@ -194,20 +196,15 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
             const sliderFillWidth = getCSSVariableAbsoluteValue('--slider-fill', rootRef);
             onDrag?.(sliderFillWidth);
 
-            const currentChapter = $chapters?.filter(
-                (chapter) => $currentTime && $currentTime > chapter.startTime && $currentTime < chapter.endTime,
-            );
-
             // When chapters exists update the chapter fills for each div.
-            if (currentChapter && currentChapter?.length > 0) {
-                const { index, percentageTime } = currentChapter[0];
+            if ($currentChapter) {
+                const { index, percentageTime } = $currentChapter;
                 const currentChapterElem = chapterRefs.current[index];
 
                 const rect = currentChapterElem.getBoundingClientRect();
                 const totalChapterWidth = (Number(percentageTime) * $total) / 100;
                 const chapterFillWidth = computeCurrentWidthFromPointerPos(e.pageX, rect.left, totalChapterWidth);
 
-                console.log({ clientX: e.clientX, pageX: e.pageX, left: rect.left, totalChapterWidth });
                 /**
                  * Below if block removes the data-chapter-dragging attribute whenever the dragging happens from left to right or vice-versa;
                  */
