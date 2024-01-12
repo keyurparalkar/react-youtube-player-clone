@@ -48,6 +48,7 @@ const StyledContainer = styled.div<StyledContainerProps>`
             opacity: 1;
         }
 
+        // Increase the height of the chapter when dragging is enabled;
         & [data-chapter-dragging] {
             height: 8px;
         }
@@ -60,7 +61,7 @@ const StyledContainer = styled.div<StyledContainerProps>`
         }
     }
 
-    // While chapter is getting hovered:
+    // While chapter is getting hovered;
     &[data-chapters-hover] {
         height: 8px;
     }
@@ -74,6 +75,7 @@ const StyleChapterContainer = styled.div<StyledChapterContainerProps>`
     position: relative;
     transition: height 200ms ease;
 
+    // Increase the height of the styled track when chapter is being dragged;
     &[data-chapter-dragging] > div {
         height: 8px;
     }
@@ -205,6 +207,9 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
                 const totalChapterWidth = (Number(percentageTime) * $total) / 100;
                 const chapterFillWidth = computeCurrentWidthFromPointerPos(e.pageX, rect.left, totalChapterWidth);
 
+                /**
+                 * Below if block removes the data-chapter-dragging attribute whenever the dragging happens from left to right or vice-versa;
+                 */
                 if ($currentTime && $chapters) {
                     index > 0 &&
                         $currentTime >= $chapters[index].startTime &&
@@ -215,6 +220,7 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
                         chapterRefs.current[index + 1].removeAttribute('data-chapter-dragging');
                 }
 
+                // Don't update the chapter-fill when it is beyond the limits
                 if (chapterFillWidth < 0 || chapterFillWidth > 100) {
                     return;
                 }
@@ -234,6 +240,7 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
             rootRef.current.removeAttribute('data-dragging');
         }
 
+        // Remove all the data-chapter-dragging attributes from all the chapters when mouse up happens i.e. when dragging is finished;
         if (chapterRefs.current) {
             chapterRefs.current.forEach((chapter) => {
                 chapter.removeAttribute('data-chapter-dragging');
