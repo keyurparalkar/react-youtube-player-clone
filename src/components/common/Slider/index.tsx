@@ -207,17 +207,28 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
                 const totalChapterWidth = (Number(percentageTime) * $total) / 100;
                 const chapterFillWidth = computeCurrentWidthFromPointerPos(e.pageX, rect.left, totalChapterWidth);
 
+                console.log({ clientX: e.clientX, pageX: e.pageX, left: rect.left, totalChapterWidth });
                 /**
                  * Below if block removes the data-chapter-dragging attribute whenever the dragging happens from left to right or vice-versa;
                  */
                 if ($currentTime && $chapters) {
-                    index > 0 &&
-                        $currentTime >= $chapters[index].startTime &&
+                    // movement from left to right;
+                    if (index > 0 && $currentTime >= $chapters[index].startTime) {
                         chapterRefs.current[index - 1].removeAttribute('data-chapter-dragging');
 
-                    index < $chapters.length - 1 &&
-                        $currentTime <= $chapters[index].endTime &&
+                        /**
+                         * Here we update the chapter fill of the previous element since the previous element on
+                         * complete wasn't getting completely filled i.e. around 98% or 97%.
+                         * So to approximate this error we manually set the fill to 100%.
+                         * Similar is the case when we are moving from right to left in the below if block
+                         */
+                        chapterRefs.current[index - 1].style.setProperty('--chapter-fill', '100%');
+                    }
+
+                    if (index < $chapters.length - 1 && $currentTime <= $chapters[index].endTime) {
                         chapterRefs.current[index + 1].removeAttribute('data-chapter-dragging');
+                        chapterRefs.current[index + 1].style.setProperty('--chapter-fill', '0%');
+                    }
                 }
 
                 // Don't update the chapter-fill when it is beyond the limits
