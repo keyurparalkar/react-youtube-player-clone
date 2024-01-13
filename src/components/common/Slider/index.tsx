@@ -22,11 +22,17 @@ export interface SliderRefProps {
     updateSliderFill: (completedPercentage: number) => void;
 }
 
-type StyledContainerProps = Pick<SliderProps, '$fillColor' | '$total'>;
+type HasChapters = {
+    $hasChapters: boolean;
+};
+
+type StyledContainerProps = Pick<SliderProps, '$fillColor' | '$total'> & HasChapters;
 
 type StyledChapterContainerProps = {
     $width: string;
 };
+
+type StyledSliderFillProps = HasChapters;
 
 const StyledContainer = styled.div<StyledContainerProps>`
     --slider-pointer: 0%; // when hover happens pointer is updated
@@ -39,7 +45,7 @@ const StyledContainer = styled.div<StyledContainerProps>`
     width: ${(props) => props.$total};
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    ${(props) => props.$hasChapters && 'justify-content: center;'}
     align-items: center;
     cursor: pointer;
 
@@ -92,10 +98,10 @@ const StyledTrack = styled.div`
     transition: height 200ms ease;
 `;
 
-const StyledSliderFill = styled.div`
+const StyledSliderFill = styled.div<StyledSliderFillProps>`
     height: 5px;
     background-color: var(--slider-fill-color);
-    width: var(--chapter-fill, 0%);
+    width: var(${(props) => (props.$hasChapters ? '--chapter-fill' : '--slider-fill')}, 0%);
     position: absolute;
     pointer-events: none;
     /** https://developer.mozilla.org/en-US/docs/Web/CSS/pointer-events#none
@@ -158,6 +164,7 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
     } = props;
     const rootRef = useRef<HTMLDivElement>(null);
     const chapterRefs = useRef<Array<ElementRef<'div'>> | []>([]);
+    const hasChapters = ($chapters && $chapters.length > 0) || false;
 
     const updateSliderFillByEvent = (variableName: SliderCSSVariableTypes, e: React.MouseEvent<HTMLDivElement>) => {
         const elem = rootRef.current;
@@ -279,14 +286,15 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
     return (
         <StyledContainer
             className="slider"
+            $hasChapters={hasChapters}
             $fillColor={$fillColor}
             onMouseMove={handleContainerMouseMove}
             onMouseUp={handleContainerMouseUp}
             ref={rootRef}
             $total={$total}
         >
-            {$chapters && $chapters.length > 0 ? (
-                $chapters.map((chapter, index) => (
+            {hasChapters ? (
+                $chapters?.map((chapter, index) => (
                     <StyleChapterContainer
                         className={`chapter-${index}`}
                         key={`key-${chapter.percentageTime}`}
@@ -294,13 +302,13 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
                         $width={`${chapter.percentageTime}%`}
                     >
                         <StyledTrack className="slider-track" onClick={handleClick} />
-                        <StyledSliderFill className="slider-fill" />
+                        <StyledSliderFill className="slider-fill" $hasChapters />
                     </StyleChapterContainer>
                 ))
             ) : (
                 <>
                     <StyledTrack className="slider-track" onClick={handleClick} />
-                    <StyledSliderFill className="slider-fill" />
+                    <StyledSliderFill className="slider-fill" $hasChapters={false} />
                 </>
             )}
 

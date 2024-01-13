@@ -61,7 +61,6 @@ const Seekbar = () => {
     const currentChapter = chapters?.filter(
         (chapter) => currentTime && currentTime > chapter.startTime && currentTime < chapter.endTime,
     );
-
     // Update CSS variables that drives the slider component
     useEffect(() => {
         if (sliderRef.current && !isSeeking) {
