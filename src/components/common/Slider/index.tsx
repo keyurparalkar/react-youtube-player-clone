@@ -182,8 +182,59 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
 
     const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
         if (rootRef.current) {
+            /**
+             * Algorithm:
+             * 1. We first get the value from slider fill.
+             * 2. Then we loop over the chapers and take the sum with previous chapters fill width and see if its less than slider fill.
+             * 3. If yes, then we completely fill the chapter with 100% width
+             * 4. If no, then we calculate the chapter-fill for that particular chapter.
+             */
             updateSliderFillByEvent('--slider-fill', e);
             const width = getCSSVariableAbsoluteValue('--slider-fill', rootRef);
+
+            if ($chapters) {
+                const allChapterWidths = $chapters.map((chapter) => Number(chapter.percentageTime));
+                let acc = 0;
+                const currentChapterIdx = allChapterWidths.findIndex((val) => {
+                    acc += val;
+                    if (acc > width) {
+                        return true;
+                    }
+                });
+                const nextIdx =
+                    currentChapterIdx === $chapters.length - 1 ? $chapters.length - 1 : currentChapterIdx + 1;
+
+                const prevChapterElem = chapterRefs.current[currentChapterIdx - 1];
+                const currentChapterElem = chapterRefs.current[currentChapterIdx];
+                const nextChapterElem = chapterRefs.current[nextIdx];
+
+                // Fill the previous elements:
+                for (let i = 0; i < currentChapterIdx; i++) {
+                    chapterRefs.current[i].style.setProperty('--chapter-fill', '100%');
+                }
+
+                const previousChapterFill = getCSSVariableAbsoluteValue('--chapter-fill', prevChapterElem);
+                const currentChapterFill = getCSSVariableAbsoluteValue('--chapter-fill', currentChapterElem);
+                const nextChapterFill = getCSSVariableAbsoluteValue('--chapter-fill', nextChapterElem);
+
+                // Fill the current chapter;
+                if (previousChapterFill === 100 && currentChapterFill >= 0) {
+                    const currentChapterWidth = allChapterWidths[currentChapterIdx];
+                    const rect = currentChapterElem.getBoundingClientRect();
+                    const totalChapterWidth = (currentChapterWidth * $total) / 100;
+                    const chapterFillWidth = computeCurrentWidthFromPointerPos(e.pageX, rect.left, totalChapterWidth);
+                    currentChapterElem.style.setProperty('--chapter-fill', `${chapterFillWidth}%`);
+                }
+
+                // clean up the later chapters when going from right to left;
+
+                if (nextChapterFill > 0) {
+                    for (let i = currentChapterIdx + 1; i < $chapters.length; i++) {
+                        chapterRefs.current[i].style.setProperty('--chapter-fill', '0%');
+                    }
+                }
+            }
+
             onClick?.(width);
         }
     };
