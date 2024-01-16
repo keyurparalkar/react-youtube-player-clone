@@ -66,6 +66,17 @@ const Seekbar = () => {
         if (sliderRef.current && !isSeeking) {
             const newPosPercentage = (currentTime / totalDuration) * 100;
             sliderRef.current.updateSliderFill(newPosPercentage);
+
+            //TODO(Keyur): To add comments and optimize the below solution;
+            if (currentChapter.length > 0) {
+                const { index, endTime, startTime } = currentChapter[0];
+                const totalChapterDuration = endTime - startTime;
+                const currentChapterFillWidth =
+                    index === 0
+                        ? (currentTime / totalChapterDuration) * 100
+                        : ((currentTime - chapters[index - 1].endTime) / totalChapterDuration) * 100;
+                sliderRef.current.updateChapterFill(index, currentChapterFillWidth);
+            }
         }
     }, [currentTime, isSeeking]);
 

@@ -20,6 +20,7 @@ interface SliderProps
 
 export interface SliderRefProps {
     updateSliderFill: (completedPercentage: number) => void;
+    updateChapterFill: (currentChapterIdx: number, completedPercentage: number) => void;
 }
 
 type HasChapters = {
@@ -328,6 +329,12 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
             return {
                 updateSliderFill(percentageCompleted: number) {
                     rootRef.current?.style.setProperty('--slider-fill', `${percentageCompleted}%`);
+                },
+                updateChapterFill(currentChapterIdx: number, completedPercentage: number) {
+                    chapterRefs.current[currentChapterIdx].style.setProperty(
+                        '--chapter-fill',
+                        `${completedPercentage}%`,
+                    );
                 },
             };
         },
