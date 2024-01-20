@@ -61,6 +61,11 @@ const Seekbar = () => {
     const currentChapter = chapters?.filter(
         (chapter) => currentTime && currentTime > chapter.startTime && currentTime < chapter.endTime,
     );
+
+    const hoveredChapter = chapters?.filter(
+        (chapter) => hoveredDuration && hoveredDuration > chapter.startTime && hoveredDuration < chapter.endTime,
+    );
+
     // Update CSS variables that drives the slider component
     useEffect(() => {
         if (sliderRef.current && !isSeeking) {
@@ -87,7 +92,7 @@ const Seekbar = () => {
                     <FrameTooltip
                         duration={hoveredDuration}
                         thumbnailUrl={hoveredThumbnailUrl}
-                        chapterName={currentChapter[0]?.chapterName}
+                        chapterName={hoveredChapter[0]?.chapterName}
                     />
                 }
                 movingTooltip
