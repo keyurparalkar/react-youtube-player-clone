@@ -205,7 +205,8 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
                 const nextIdx =
                     currentChapterIdx === $chapters.length - 1 ? $chapters.length - 1 : currentChapterIdx + 1;
 
-                const prevChapterElem = chapterRefs.current[currentChapterIdx - 1];
+                const prevChapterIdx = currentChapterIdx === 0 ? 0 : currentChapterIdx - 1;
+                const prevChapterElem = chapterRefs.current[prevChapterIdx];
                 const currentChapterElem = chapterRefs.current[currentChapterIdx];
                 const nextChapterElem = chapterRefs.current[nextIdx];
 
