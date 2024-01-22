@@ -3,12 +3,12 @@ import MuteButton from './MuteButton';
 import VolumeSlider from './VolumeSlider';
 
 const StyledVolumeControl = styled.div`
-    width: 20%;
     display: flex;
 
     &:hover {
         & .control--volume-slider {
             width: 60px;
+            margin-right: 1rem;
         }
     }
 `;

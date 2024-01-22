@@ -5,11 +5,12 @@ import { PlayerContext } from '../context';
 import PlayButton from './PlayButton';
 import VolumeControl from './VolumeControl';
 import Seekbar from './Seekbar';
+import TimeDisplay from './TimeDisplay';
 
-const StyledContainer = styled(motion.div)<{ isPlaying?: boolean }>`
+const StyledContainer = styled(motion.div)<{ $isPlaying?: boolean }>`
     background: #ffffff00;
     background: linear-gradient(180deg, #ffffff00, #010101);
-    ${(props) => (!props.isPlaying ? 'opacity: 1 !important' : '')};
+    ${(props) => (!props.$isPlaying ? 'opacity: 1 !important' : '')};
 
     position: absolute;
     color: #eee;
@@ -29,12 +30,13 @@ const ControlToolbar = () => {
     const { isPlaying } = useContext(PlayerContext);
 
     return (
-        <StyledContainer className="video-controls-container" isPlaying={isPlaying}>
+        <StyledContainer className="video-controls-container" $isPlaying={isPlaying}>
             <StyledVideoControl>
                 <Seekbar />
                 <StyledInteractionGroup1 className="interaction-group-1">
                     <PlayButton />
                     <VolumeControl />
+                    <TimeDisplay />
                 </StyledInteractionGroup1>
             </StyledVideoControl>
         </StyledContainer>
