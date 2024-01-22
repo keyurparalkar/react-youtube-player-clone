@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { PlayerDispatchContext } from '../../context';
+import { PlayerContext, PlayerDispatchContext } from '../../context';
 import { VOLUME_CHANGE } from '../../context/actions';
 import Slider, { SliderRefProps } from '../common/Slider';
 import Tooltip from '../common/Tooltip';
@@ -12,6 +12,7 @@ const StyledContainer = styled.div`
 
 const VolumeSlider = () => {
     const sliderRef = useRef<SliderRefProps>(null);
+    const { muted, volume } = useContext(PlayerContext);
     const dispatch = useContext(PlayerDispatchContext);
 
     const onPositionChangeByDrag = (currentPercentage: number) => {
@@ -39,6 +40,13 @@ const VolumeSlider = () => {
 
     useEffect(() => {
         if (sliderRef.current) {
+            if (muted) sliderRef.current.updateSliderFill(0);
+            else sliderRef.current.updateSliderFill(volume * 100);
+        }
+    }, [muted]);
+
+    useEffect(() => {
+        if (sliderRef.current) {
             sliderRef.current.updateSliderFill(100);
         }
     }, []);
@@ -46,7 +54,7 @@ const VolumeSlider = () => {
     return (
         <Tooltip content="Volume">
             <StyledContainer className="control--volume-slider">
-                <Slider total={60} onClick={onPositionChangeByClick} onDrag={onPositionChangeByDrag} ref={sliderRef} />
+                <Slider $total={60} onClick={onPositionChangeByClick} onDrag={onPositionChangeByDrag} ref={sliderRef} />
             </StyledContainer>
         </Tooltip>
     );

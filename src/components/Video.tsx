@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef } from 'react';
-import { PlayerContext, PlayerDispatchContext } from '../context';
+import { PlayerContext, PlayerDispatchContext, StateProps } from '../context';
 import {
     HAS_VIDEO_LOADED,
     PLAY_PAUSE,
@@ -8,13 +8,18 @@ import {
 } from '../context/actions';
 import { constructUrl } from '../utils';
 
-const { REACT_APP_BASE_URL, REACT_APP_VIDEO_URL, REACT_APP_VTT_URL } = process.env;
+const { REACT_APP_BASE_URL, REACT_APP_VIDEO_URL, REACT_APP_VTT_URL, REACT_APP_CHAPTERS_URL } = process.env;
 const VIDEO_SRC = constructUrl([REACT_APP_BASE_URL, REACT_APP_VIDEO_URL]);
 const VTT_SRC = constructUrl([REACT_APP_BASE_URL, REACT_APP_VTT_URL]);
+const CHAPTERS_VTT_SRC = constructUrl([REACT_APP_BASE_URL, REACT_APP_CHAPTERS_URL]);
+
+type OnLoadType = Partial<StateProps>;
 
 const Video = () => {
     const videoRef = useRef<HTMLVideoElement>(null);
-    const trackRef = useRef<HTMLTrackElement>(null);
+    const trackMetaDataRef = useRef<HTMLTrackElement>(null);
+    const trackChaptersRef = useRef<HTMLTrackElement>(null);
+
     const {
         isPlaying,
         muted,
@@ -25,6 +30,7 @@ const Video = () => {
         isSeeking,
         totalDuration,
         hasVideoLoaded,
+        chapters,
     } = useContext(PlayerContext);
     const dispatch = useContext(PlayerDispatchContext);
 
@@ -73,8 +79,8 @@ const Video = () => {
     }, [currentTime, isSeeking]);
 
     useEffect(() => {
-        if (trackRef.current) {
-            const { track } = trackRef.current;
+        if (trackMetaDataRef.current) {
+            const { track } = trackMetaDataRef.current;
             const allCues = track.cues;
             const cueIndex = Math.trunc(hoveredDuration);
             const currentCue = allCues?.[cueIndex];
@@ -90,12 +96,29 @@ const Video = () => {
 
         if (video) {
             video.addEventListener('loadeddata', () => {
+                //TODO(Keyur): Load frametrack details in the store
+                const payload: OnLoadType = {
+                    hasVideoLoaded: true,
+                    totalDuration: video.duration,
+                };
+
+                if (trackChaptersRef.current) {
+                    const { track } = trackChaptersRef.current;
+                    const cues = track.cues;
+                    if (cues) {
+                        payload['chapters'] = (Object.values(cues) as VTTCue[]).map((cue: VTTCue, index) => ({
+                            index,
+                            chapterName: cue.text,
+                            endTime: cue.endTime,
+                            startTime: cue.startTime,
+                            percentageTime: (((cue.endTime - cue.startTime) / video.duration) * 100).toFixed(2),
+                        }));
+                    }
+                }
+
                 dispatch({
                     type: HAS_VIDEO_LOADED,
-                    payload: {
-                        hasVideoLoaded: true,
-                        totalDuration: video.duration,
-                    },
+                    payload,
                 });
             });
         }
@@ -113,8 +136,8 @@ const Video = () => {
             <div onClick={onPlayPause} className="html-video-container">
                 <video onTimeUpdate={handleTimeUpdate} ref={videoRef} crossOrigin="">
                     <source src={VIDEO_SRC} type="video/mp4" />
-                    <track ref={trackRef} default kind="metadata" src={VTT_SRC} />
-                    test
+                    <track ref={trackMetaDataRef} default kind="metadata" src={VTT_SRC} />
+                    <track ref={trackChaptersRef} default kind="chapters" src={CHAPTERS_VTT_SRC} />
                 </video>
             </div>
             <code style={{ position: 'absolute' }}>
@@ -128,6 +151,7 @@ const Video = () => {
                         seeking: isSeeking,
                         hoveredDuration,
                         hoveredThumbnailUrl,
+                        chapters,
                         hasVideoLoaded,
                     },
                     null,

@@ -10,15 +10,22 @@ import { numberToFixed } from '../../../utils';
 export const computeCurrentWidthFromPointerPos = (xDistance: number, left: number, totalWidth: number) =>
     numberToFixed(((xDistance - left) / totalWidth) * 100, 2);
 
-export type SliderCSSVariableTypes = '--slider-fill' | '--slider-pointer';
+export type SliderCSSVariableTypes = '--slider-fill' | '--slider-pointer' | '--chapter-fill';
 
-export const getCSSVariableValue = (variableName: SliderCSSVariableTypes, ref: React.RefObject<HTMLDivElement>) => {
-    return ref.current?.style.getPropertyValue(variableName) || '0%';
+export const getCSSVariableValue = (
+    variableName: SliderCSSVariableTypes,
+    ref: React.RefObject<HTMLDivElement> | HTMLDivElement,
+) => {
+    if ('current' in ref) {
+        return ref.current?.style.getPropertyValue(variableName) || '0%';
+    } else {
+        return ref.style.getPropertyValue(variableName) || '0%';
+    }
 };
 
 export const getCSSVariableAbsoluteValue = (
     variableName: SliderCSSVariableTypes,
-    ref: React.RefObject<HTMLDivElement>,
+    ref: React.RefObject<HTMLDivElement> | HTMLDivElement,
 ) => {
     const value = getCSSVariableValue(variableName, ref);
     return Number(value.split('%')[0]);

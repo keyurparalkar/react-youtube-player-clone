@@ -11,7 +11,8 @@ const tooltipStyles: React.CSSProperties = {
 };
 
 const Seekbar = () => {
-    const { currentTime, totalDuration, hoveredDuration, hoveredThumbnailUrl, isSeeking } = useContext(PlayerContext);
+    const { chapters, currentTime, totalDuration, hoveredDuration, hoveredThumbnailUrl, isSeeking } =
+        useContext(PlayerContext);
     const dispatch = useContext(PlayerDispatchContext);
     const sliderRef = useRef<SliderRefProps>(null);
 
@@ -57,23 +58,51 @@ const Seekbar = () => {
         dispatch({ type: UPDATE_HOVERED_DURATION, payload: hoveredDuration });
     };
 
+    const currentChapter = chapters?.filter(
+        (chapter) => currentTime && currentTime > chapter.startTime && currentTime < chapter.endTime,
+    );
+
+    const hoveredChapter = chapters?.filter(
+        (chapter) => hoveredDuration && hoveredDuration > chapter.startTime && hoveredDuration < chapter.endTime,
+    );
+
     // Update CSS variables that drives the slider component
     useEffect(() => {
         if (sliderRef.current && !isSeeking) {
             const newPosPercentage = (currentTime / totalDuration) * 100;
             sliderRef.current.updateSliderFill(newPosPercentage);
+
+            //TODO(Keyur): To add comments and optimize the below solution;
+            if (currentChapter.length > 0) {
+                const { index, endTime, startTime } = currentChapter[0];
+                const totalChapterDuration = endTime - startTime;
+                const currentChapterFillWidth =
+                    index === 0
+                        ? (currentTime / totalChapterDuration) * 100
+                        : ((currentTime - chapters[index - 1].endTime) / totalChapterDuration) * 100;
+                sliderRef.current.updateChapterFill(index, currentChapterFillWidth);
+            }
         }
     }, [currentTime, isSeeking]);
 
     return (
         <div style={{ width: 780 }}>
             <Tooltip
-                content={<FrameTooltip duration={hoveredDuration} thumbnailUrl={hoveredThumbnailUrl} />}
+                content={
+                    <FrameTooltip
+                        duration={hoveredDuration}
+                        thumbnailUrl={hoveredThumbnailUrl}
+                        chapterName={hoveredChapter[0]?.chapterName}
+                    />
+                }
                 movingTooltip
                 tooltipStyles={tooltipStyles}
             >
                 <Slider
-                    total={780}
+                    $currentChapter={currentChapter?.[0]}
+                    $chapters={chapters}
+                    $currentTime={currentTime}
+                    $total={780}
                     $fillColor="#ff0000"
                     onClick={onPositionChangeByClick}
                     onDrag={onPositionChangeByDrag}
