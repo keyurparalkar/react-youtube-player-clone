@@ -8,6 +8,7 @@ const StyledVolumeControl = styled.div`
     &:hover {
         & .control--volume-slider {
             width: 60px;
+            margin-right: 1rem;
         }
     }
 `;

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const StyledContainer = styled.span`
-    margin: 0.36rem 1rem;
+    margin: 0.4rem 1rem 0.7rem 0rem;
     font-size: 85%;
     color: #ddd;
 `;
