@@ -8,6 +8,7 @@ import Video from './Video';
 const StyledVideoContainer = styled.div`
     position: relative;
     width: fit-content;
+    height: fit-content;
 
     .video-controls {
         opacity: 0;
