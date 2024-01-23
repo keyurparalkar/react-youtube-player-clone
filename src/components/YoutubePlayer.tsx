@@ -9,6 +9,7 @@ const StyledVideoContainer = styled.div`
     position: relative;
     width: fit-content;
     height: fit-content;
+    margin: 5%;
 
     .video-controls {
         opacity: 0;
