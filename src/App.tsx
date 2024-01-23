@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import styled from 'styled-components';
 import YoutubePlayer from './components/YoutubePlayer';
 import { PlayerContext, PlayerDispatchContext } from './context';
-import { TOGGLE_CHAPTERS } from './context/actions';
+import { TOGGLE_CHAPTERS, TOGGLE_STATS } from './context/actions';
 
 const StyledGrid = styled.div`
     display: grid;
@@ -32,13 +32,19 @@ const StyledFieldSet = styled.fieldset`
     }
 `;
 function App() {
-    const { shouldHaveChapters } = useContext(PlayerContext);
+    const { shouldHaveChapters, shouldhaveStats } = useContext(PlayerContext);
     const dispatch = useContext(PlayerDispatchContext);
 
     const toggleChapters = () =>
         dispatch({
             type: TOGGLE_CHAPTERS,
             payload: !shouldHaveChapters,
+        });
+
+    const toggleStats = () =>
+        dispatch({
+            type: TOGGLE_STATS,
+            payload: !shouldhaveStats,
         });
 
     return (
@@ -59,7 +65,7 @@ function App() {
                     </div>
 
                     <div>
-                        <input id="enableStats" type="checkbox" />
+                        <input id="enableStats" type="checkbox" onChange={toggleStats} />
                         <label htmlFor="enableStats">Enable Video Stats</label>
                     </div>
                 </StyledFieldSet>

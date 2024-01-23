@@ -4,6 +4,7 @@ import {
     ON_MUTE,
     PLAY_PAUSE,
     TOGGLE_CHAPTERS,
+    TOGGLE_STATS,
     UPDATE_HOVERED_DURATION,
     UPDATE_HOVERED_THUMBNAIL_URL,
     UPDATE_SEEKING,
@@ -75,6 +76,13 @@ export const playerReducer = (state: StateProps, action: ActionProps): StateProp
             return {
                 ...state,
                 shouldHaveChapters: action.payload,
+            };
+        }
+
+        case TOGGLE_STATS: {
+            return {
+                ...state,
+                shouldhaveStats: action.payload,
             };
         }
 

@@ -23,6 +23,7 @@ export type StateProps = {
     isSeeking: boolean;
     chapters: Array<Chapter> | [];
     shouldHaveChapters: boolean;
+    shouldhaveStats: boolean;
 };
 
 export type ActionProps = {
@@ -47,6 +48,7 @@ export const initialState: StateProps = {
     isSeeking: false,
     chapters: [],
     shouldHaveChapters: true,
+    shouldhaveStats: true,
 };
 
 export const PlayerContext = createContext<StateProps>(initialState);

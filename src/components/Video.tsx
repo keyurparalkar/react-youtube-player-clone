@@ -31,6 +31,7 @@ const Video = () => {
         totalDuration,
         hasVideoLoaded,
         chapters,
+        shouldhaveStats,
     } = useContext(PlayerContext);
     const dispatch = useContext(PlayerDispatchContext);
 
@@ -140,24 +141,26 @@ const Video = () => {
                     <track ref={trackChaptersRef} default kind="chapters" src={CHAPTERS_VTT_SRC} />
                 </video>
             </div>
-            <code style={{ position: 'absolute' }}>
-                {JSON.stringify(
-                    {
-                        isPlaying,
-                        volume,
-                        muted,
-                        currentTime: currentTime,
-                        totalDuration,
-                        seeking: isSeeking,
-                        hoveredDuration,
-                        hoveredThumbnailUrl,
-                        chapters,
-                        hasVideoLoaded,
-                    },
-                    null,
-                    2,
-                )}
-            </code>
+            {shouldhaveStats && (
+                <code style={{ position: 'absolute' }}>
+                    {JSON.stringify(
+                        {
+                            isPlaying,
+                            volume,
+                            muted,
+                            currentTime: currentTime,
+                            totalDuration,
+                            seeking: isSeeking,
+                            hoveredDuration,
+                            hoveredThumbnailUrl,
+                            chapters,
+                            hasVideoLoaded,
+                        },
+                        null,
+                        2,
+                    )}
+                </code>
+            )}
         </>
     );
 };
