@@ -1,6 +1,8 @@
+import { useContext } from 'react';
 import styled from 'styled-components';
 import YoutubePlayer from './components/YoutubePlayer';
-import { PlayerProvider } from './context';
+import { PlayerContext, PlayerDispatchContext } from './context';
+import { TOGGLE_CHAPTERS } from './context/actions';
 
 const StyledGrid = styled.div`
     display: grid;
@@ -30,6 +32,15 @@ const StyledFieldSet = styled.fieldset`
     }
 `;
 function App() {
+    const { shouldHaveChapters } = useContext(PlayerContext);
+    const dispatch = useContext(PlayerDispatchContext);
+
+    const toggleChapters = () =>
+        dispatch({
+            type: TOGGLE_CHAPTERS,
+            payload: !shouldHaveChapters,
+        });
+
     return (
         <StyledGrid>
             <StyledSideBar>
@@ -43,19 +54,17 @@ function App() {
                     <legend>Toggle Video Controls</legend>
 
                     <div>
+                        <input id="enableChapters" type="checkbox" onChange={toggleChapters} />
                         <label htmlFor="enableChapters">Enable Chapters</label>
-                        <input id="enableChapters" type="checkbox" />
                     </div>
 
                     <div>
-                        <label htmlFor="enableStats">Enable Video Stats</label>
                         <input id="enableStats" type="checkbox" />
+                        <label htmlFor="enableStats">Enable Video Stats</label>
                     </div>
                 </StyledFieldSet>
             </StyledSideBar>
-            <PlayerProvider>
-                <YoutubePlayer />
-            </PlayerProvider>
+            <YoutubePlayer />
         </StyledGrid>
     );
 }

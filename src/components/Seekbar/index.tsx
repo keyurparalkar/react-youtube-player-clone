@@ -11,8 +11,15 @@ const tooltipStyles: React.CSSProperties = {
 };
 
 const Seekbar = () => {
-    const { chapters, currentTime, totalDuration, hoveredDuration, hoveredThumbnailUrl, isSeeking } =
-        useContext(PlayerContext);
+    const {
+        chapters,
+        currentTime,
+        totalDuration,
+        hoveredDuration,
+        hoveredThumbnailUrl,
+        isSeeking,
+        shouldHaveChapters,
+    } = useContext(PlayerContext);
     const dispatch = useContext(PlayerDispatchContext);
     const sliderRef = useRef<SliderRefProps>(null);
 
@@ -104,6 +111,7 @@ const Seekbar = () => {
                     $currentTime={currentTime}
                     $total={780}
                     $fillColor="#ff0000"
+                    $shouldDisplayChapters={shouldHaveChapters}
                     onClick={onPositionChangeByClick}
                     onDrag={onPositionChangeByDrag}
                     onMouseUp={handleMouseUp}

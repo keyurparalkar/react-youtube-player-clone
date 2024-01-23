@@ -22,6 +22,7 @@ export type StateProps = {
     hoveredThumbnailUrl: string;
     isSeeking: boolean;
     chapters: Array<Chapter> | [];
+    shouldHaveChapters: boolean;
 };
 
 export type ActionProps = {
@@ -45,6 +46,7 @@ export const initialState: StateProps = {
     hoveredThumbnailUrl: '',
     isSeeking: false,
     chapters: [],
+    shouldHaveChapters: true,
 };
 
 export const PlayerContext = createContext<StateProps>(initialState);

@@ -8,6 +8,7 @@ import { computeCurrentWidthFromPointerPos, getCSSVariableAbsoluteValue, SliderC
 interface SliderProps
     extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onClick' | 'onDrag' | 'onMouseUp' | 'onMouseMove'> {
     $total: number;
+    $shouldDisplayChapters?: boolean;
     $currentTime?: number;
     $currentChapter?: Chapter;
     $chapters?: Chapter[];
@@ -153,6 +154,7 @@ const StyledThumb = styled.div`
 
 const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
     const {
+        $shouldDisplayChapters,
         $currentChapter,
         $currentTime,
         $chapters,
@@ -352,7 +354,7 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
             ref={rootRef}
             $total={$total}
         >
-            {hasChapters ? (
+            {$shouldDisplayChapters && hasChapters ? (
                 $chapters?.map((chapter, index) => (
                     <StyleChapterContainer
                         className={`chapter-${index}`}

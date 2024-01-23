@@ -3,6 +3,7 @@ import {
     HAS_VIDEO_LOADED,
     ON_MUTE,
     PLAY_PAUSE,
+    TOGGLE_CHAPTERS,
     UPDATE_HOVERED_DURATION,
     UPDATE_HOVERED_THUMBNAIL_URL,
     UPDATE_SEEKING,
@@ -10,7 +11,7 @@ import {
     VOLUME_CHANGE,
 } from './actions';
 
-export const playerReducer = (state: StateProps, action: ActionProps) => {
+export const playerReducer = (state: StateProps, action: ActionProps): StateProps => {
     switch (action.type) {
         case PLAY_PAUSE: {
             return {
@@ -67,6 +68,13 @@ export const playerReducer = (state: StateProps, action: ActionProps) => {
             return {
                 ...state,
                 isSeeking: action.payload,
+            };
+        }
+
+        case TOGGLE_CHAPTERS: {
+            return {
+                ...state,
+                shouldHaveChapters: action.payload,
             };
         }
 
