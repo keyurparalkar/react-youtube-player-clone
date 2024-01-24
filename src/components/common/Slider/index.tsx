@@ -168,7 +168,7 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
     } = props;
     const rootRef = useRef<HTMLDivElement>(null);
     const chapterRefs = useRef<Array<ElementRef<'div'>> | []>([]);
-    const hasChapters = ($chapters && $chapters.length > 0) || false;
+    const hasChapters = ($shouldDisplayChapters && $chapters && $chapters.length > 0) || false;
 
     const updateSliderFillByEvent = (variableName: SliderCSSVariableTypes, e: React.MouseEvent<HTMLDivElement>) => {
         const elem = rootRef.current;
@@ -355,7 +355,7 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
             ref={rootRef}
             $total={$total}
         >
-            {$shouldDisplayChapters && hasChapters ? (
+            {hasChapters ? (
                 $chapters?.map((chapter, index) => (
                     <StyleChapterContainer
                         className={`chapter-${index}`}
