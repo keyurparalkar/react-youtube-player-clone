@@ -1,18 +1,27 @@
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect, useMemo, useRef } from 'react';
 import { PlayerContext, PlayerDispatchContext } from '../../context';
 import { UPDATE_HOVERED_DURATION, UPDATE_SEEKING, UPDATE_VIDEO_CURRENT_TIME } from '../../context/actions';
 import { numberToFixed } from '../../utils';
 import Slider, { SliderRefProps } from '../common/Slider';
 import Tooltip from '../common/Tooltip';
 import FrameTooltip from './FrameTooltip';
+import { VIDEO_INFO_1, VIDEO_INFO_2 } from '../../utils/constants';
 
 const tooltipStyles: React.CSSProperties = {
     backgroundColor: 'transparent',
 };
 
 const Seekbar = () => {
-    const { chapters, currentTime, totalDuration, hoveredDuration, hoveredThumbnailUrl, isSeeking } =
-        useContext(PlayerContext);
+    const {
+        chapters,
+        currentTime,
+        totalDuration,
+        hoveredDuration,
+        hoveredThumbnailUrl,
+        isSeeking,
+        shouldHaveChapters,
+        selectedSampleVideo,
+    } = useContext(PlayerContext);
     const dispatch = useContext(PlayerDispatchContext);
     const sliderRef = useRef<SliderRefProps>(null);
 
@@ -66,6 +75,18 @@ const Seekbar = () => {
         (chapter) => hoveredDuration && hoveredDuration > chapter.startTime && hoveredDuration < chapter.endTime,
     );
 
+    const [spriteName, coords] = hoveredThumbnailUrl.split('#xywh=');
+
+    const dims = coords?.split(',');
+
+    const thumbnailUrl = useMemo(() => {
+        if (selectedSampleVideo === 'Sample 2') {
+            return `${VIDEO_INFO_2.sprite}/${spriteName}?${VIDEO_INFO_2.spriteKey}`;
+        }
+
+        return `${VIDEO_INFO_1.sprite}/${spriteName}?${VIDEO_INFO_1.spriteKey}`;
+    }, [selectedSampleVideo, spriteName]);
+
     // Update CSS variables that drives the slider component
     useEffect(() => {
         if (sliderRef.current && !isSeeking) {
@@ -89,9 +110,11 @@ const Seekbar = () => {
         <div style={{ width: 780 }}>
             <Tooltip
                 content={
+                    // TODO(Keyur): To move the thumbnail URL construction in this component rahter than parent
                     <FrameTooltip
+                        dims={dims}
                         duration={hoveredDuration}
-                        thumbnailUrl={hoveredThumbnailUrl}
+                        thumbnailUrl={thumbnailUrl}
                         chapterName={hoveredChapter[0]?.chapterName}
                     />
                 }
@@ -104,6 +127,7 @@ const Seekbar = () => {
                     $currentTime={currentTime}
                     $total={780}
                     $fillColor="#ff0000"
+                    $shouldDisplayChapters={shouldHaveChapters}
                     onClick={onPositionChangeByClick}
                     onDrag={onPositionChangeByDrag}
                     onMouseUp={handleMouseUp}

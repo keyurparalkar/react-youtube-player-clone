@@ -8,6 +8,8 @@ import { computeCurrentWidthFromPointerPos, getCSSVariableAbsoluteValue, SliderC
 interface SliderProps
     extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onClick' | 'onDrag' | 'onMouseUp' | 'onMouseMove'> {
     $total: number;
+    // TODO(Keyur): Make use of descriminative union types with typescript such that whenever the shouldDisplayChapters exists only then all chapters along with curent chapters are available.
+    $shouldDisplayChapters?: boolean;
     $currentTime?: number;
     $currentChapter?: Chapter;
     $chapters?: Chapter[];
@@ -153,6 +155,7 @@ const StyledThumb = styled.div`
 
 const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
     const {
+        $shouldDisplayChapters,
         $currentChapter,
         $currentTime,
         $chapters,
@@ -165,7 +168,7 @@ const Slider = (props: SliderProps, ref: Ref<SliderRefProps>) => {
     } = props;
     const rootRef = useRef<HTMLDivElement>(null);
     const chapterRefs = useRef<Array<ElementRef<'div'>> | []>([]);
-    const hasChapters = ($chapters && $chapters.length > 0) || false;
+    const hasChapters = ($shouldDisplayChapters && $chapters && $chapters.length > 0) || false;
 
     const updateSliderFillByEvent = (variableName: SliderCSSVariableTypes, e: React.MouseEvent<HTMLDivElement>) => {
         const elem = rootRef.current;
