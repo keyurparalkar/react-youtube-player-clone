@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import styled from 'styled-components';
 import YoutubePlayer from './components/YoutubePlayer';
 import { PlayerContext, PlayerDispatchContext } from './context';
-import { TOGGLE_CHAPTERS, TOGGLE_STATS } from './context/actions';
+import { SELECT_SAMPLE_VIDEO, TOGGLE_CHAPTERS, TOGGLE_STATS } from './context/actions';
 
 const StyledGrid = styled.div`
     display: grid;
@@ -47,14 +47,20 @@ function App() {
             payload: !shouldhaveStats,
         });
 
+    const selectSampleVideo = (videoName: string) =>
+        dispatch({
+            type: SELECT_SAMPLE_VIDEO,
+            payload: videoName,
+        });
+
     return (
         <StyledGrid>
             <StyledSideBar>
                 <h1>Youtube Player Clone</h1>
                 <StyledFieldSet className="video-sample-toggle">
                     <legend>Video Samples</legend>
-                    <button>Sample 1</button>
-                    <button>Sample 2</button>
+                    <button onClick={() => selectSampleVideo('Sample 1')}>Sample 1</button>
+                    <button onClick={() => selectSampleVideo('Sample 2')}>Sample 2</button>
                 </StyledFieldSet>
                 <StyledFieldSet className="video-control-toggle">
                     <legend>Toggle Video Controls</legend>

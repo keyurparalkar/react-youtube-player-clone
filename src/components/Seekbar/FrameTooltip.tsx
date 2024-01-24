@@ -4,16 +4,13 @@ import duration from 'dayjs/plugin/duration';
 
 import { Duration } from '../../context';
 import { useMemo } from 'react';
-import { constructUrl } from '../../utils';
-
-const { REACT_APP_BASE_URL, REACT_APP_IMAGE_SPRITE_URL, REACT_APP_IMAGE_SPRITE_KEY } = process.env;
-const IMAGE_STRIPE_URL = constructUrl([REACT_APP_BASE_URL, REACT_APP_IMAGE_SPRITE_URL]);
 
 dayjs.extend(duration);
 
 type FrameTooltipProps = {
     duration: Duration;
     thumbnailUrl: string;
+    dims: Array<string>;
     chapterName?: string;
 };
 
@@ -43,24 +40,15 @@ const StyledImage = styled.div<ImageProps>`
 `;
 
 const FrameTooltip = (props: FrameTooltipProps) => {
-    const { duration, thumbnailUrl, chapterName = '' } = props;
-    let spriteImageName;
-    let dims;
-
-    if (thumbnailUrl) {
-        [spriteImageName, dims] = thumbnailUrl.split('#xywh=');
-        dims = dims.split(',');
-    }
+    const { duration, thumbnailUrl, dims, chapterName = '' } = props;
 
     const formattedDuration = useMemo(() => dayjs.duration(duration, 'seconds').format('m:ss'), [duration]);
 
-    const imgUrl = `${IMAGE_STRIPE_URL}/${spriteImageName}?${REACT_APP_IMAGE_SPRITE_KEY}`;
-
     return (
         <StyledSnapshotContainer className="frame-snapshot">
-            {thumbnailUrl && dims && REACT_APP_IMAGE_SPRITE_KEY ? (
+            {thumbnailUrl && dims ? (
                 <StyledImage
-                    $imageUrl={imgUrl}
+                    $imageUrl={thumbnailUrl}
                     $offsetX={dims[0]}
                     $offsetY={dims[1]}
                     width={dims[2]}

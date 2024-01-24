@@ -3,6 +3,7 @@ import {
     HAS_VIDEO_LOADED,
     ON_MUTE,
     PLAY_PAUSE,
+    SELECT_SAMPLE_VIDEO,
     TOGGLE_CHAPTERS,
     TOGGLE_STATS,
     UPDATE_HOVERED_DURATION,
@@ -83,6 +84,13 @@ export const playerReducer = (state: StateProps, action: ActionProps): StateProp
             return {
                 ...state,
                 shouldhaveStats: action.payload,
+            };
+        }
+
+        case SELECT_SAMPLE_VIDEO: {
+            return {
+                ...state,
+                selectedSampleVideo: action.payload,
             };
         }
 

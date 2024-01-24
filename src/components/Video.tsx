@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect, useMemo, useRef } from 'react';
 import { PlayerContext, PlayerDispatchContext, StateProps } from '../context';
 import {
     HAS_VIDEO_LOADED,
@@ -6,12 +6,12 @@ import {
     UPDATE_HOVERED_THUMBNAIL_URL,
     UPDATE_VIDEO_CURRENT_TIME,
 } from '../context/actions';
-import { constructUrl } from '../utils';
+import { CHAPTERS_VTT_SRC, VIDEO_INFO_1, VIDEO_INFO_2 } from '../utils/constants';
 
-const { REACT_APP_BASE_URL, REACT_APP_VIDEO_URL, REACT_APP_VTT_URL, REACT_APP_CHAPTERS_URL } = process.env;
-const VIDEO_SRC = constructUrl([REACT_APP_BASE_URL, REACT_APP_VIDEO_URL]);
-const VTT_SRC = constructUrl([REACT_APP_BASE_URL, REACT_APP_VTT_URL]);
-const CHAPTERS_VTT_SRC = constructUrl([REACT_APP_BASE_URL, REACT_APP_CHAPTERS_URL]);
+// const { REACT_APP_BASE_URL, REACT_APP_VIDEO_URL, REACT_APP_VTT_URL, REACT_APP_CHAPTERS_URL } = process.env;
+// const VIDEO_SRC = constructUrl([REACT_APP_BASE_URL, REACT_APP_VIDEO_URL]);
+// const VTT_SRC = constructUrl([REACT_APP_BASE_URL, REACT_APP_VTT_URL]);
+// const CHAPTERS_VTT_SRC = constructUrl([REACT_APP_BASE_URL, REACT_APP_CHAPTERS_URL]);
 
 type OnLoadType = Partial<StateProps>;
 
@@ -32,7 +32,17 @@ const Video = () => {
         hasVideoLoaded,
         chapters,
         shouldhaveStats,
+        selectedSampleVideo,
     } = useContext(PlayerContext);
+
+    const videoSourceInfo = useMemo(() => {
+        if (selectedSampleVideo === 'Sample 2') {
+            return VIDEO_INFO_2;
+        }
+
+        return VIDEO_INFO_1;
+    }, [selectedSampleVideo]);
+
     const dispatch = useContext(PlayerDispatchContext);
 
     const onPlayPause = () => {
@@ -93,6 +103,10 @@ const Video = () => {
     }, [hoveredDuration]);
 
     useEffect(() => {
+        if (videoRef.current) videoRef.current.load();
+    }, [selectedSampleVideo]);
+
+    useEffect(() => {
         const video = videoRef.current;
 
         if (video) {
@@ -135,9 +149,9 @@ const Video = () => {
     return (
         <>
             <div onClick={onPlayPause} className="html-video-container">
-                <video onTimeUpdate={handleTimeUpdate} ref={videoRef} crossOrigin="">
-                    <source src={VIDEO_SRC} type="video/mp4" />
-                    <track ref={trackMetaDataRef} default kind="metadata" src={VTT_SRC} />
+                <video onTimeUpdate={handleTimeUpdate} ref={videoRef} crossOrigin="" width={800}>
+                    <source src={videoSourceInfo.src} type="video/mp4" />
+                    <track ref={trackMetaDataRef} default kind="metadata" src={videoSourceInfo.vtt} />
                     <track ref={trackChaptersRef} default kind="chapters" src={CHAPTERS_VTT_SRC} />
                 </video>
             </div>
