@@ -66,12 +66,17 @@ function App() {
                     <legend>Toggle Video Controls</legend>
 
                     <div>
-                        <input id="enableChapters" type="checkbox" onChange={toggleChapters} />
+                        <input
+                            id="enableChapters"
+                            type="checkbox"
+                            onChange={toggleChapters}
+                            checked={shouldHaveChapters}
+                        />
                         <label htmlFor="enableChapters">Enable Chapters</label>
                     </div>
 
                     <div>
-                        <input id="enableStats" type="checkbox" onChange={toggleStats} />
+                        <input id="enableStats" type="checkbox" onChange={toggleStats} checked={shouldhaveStats} />
                         <label htmlFor="enableStats">Enable Video Stats</label>
                     </div>
                 </StyledFieldSet>
