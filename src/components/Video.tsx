@@ -6,12 +6,7 @@ import {
     UPDATE_HOVERED_THUMBNAIL_URL,
     UPDATE_VIDEO_CURRENT_TIME,
 } from '../context/actions';
-import { CHAPTERS_VTT_SRC, VIDEO_INFO_1, VIDEO_INFO_2 } from '../utils/constants';
-
-// const { REACT_APP_BASE_URL, REACT_APP_VIDEO_URL, REACT_APP_VTT_URL, REACT_APP_CHAPTERS_URL } = process.env;
-// const VIDEO_SRC = constructUrl([REACT_APP_BASE_URL, REACT_APP_VIDEO_URL]);
-// const VTT_SRC = constructUrl([REACT_APP_BASE_URL, REACT_APP_VTT_URL]);
-// const CHAPTERS_VTT_SRC = constructUrl([REACT_APP_BASE_URL, REACT_APP_CHAPTERS_URL]);
+import { VIDEO_INFO_1, VIDEO_INFO_2 } from '../utils/constants';
 
 type OnLoadType = Partial<StateProps>;
 
@@ -152,7 +147,7 @@ const Video = () => {
                 <video onTimeUpdate={handleTimeUpdate} ref={videoRef} crossOrigin="" width={800}>
                     <source src={videoSourceInfo.src} type="video/mp4" />
                     <track ref={trackMetaDataRef} default kind="metadata" src={videoSourceInfo.vtt} />
-                    <track ref={trackChaptersRef} default kind="chapters" src={CHAPTERS_VTT_SRC} />
+                    <track ref={trackChaptersRef} default kind="chapters" src={videoSourceInfo.chapters} />
                 </video>
             </div>
             {shouldhaveStats && (
