@@ -11,7 +11,7 @@ const StyledGrid = styled.div`
 `;
 
 const StyledSideBar = styled.div`
-    background-color: #0af694;
+    background-color: #9fa4a2;
     padding: 0.5rem;
 
     display: grid;
