@@ -6,3 +6,4 @@ You can read more about how this project is implemented with the help of below b
 2. [How I build a YouTube Video Player with ReactJS: Building the Play Button](https://dev.to/keyurparalkar/how-i-build-a-youtube-video-player-with-reactjs-building-the-play-button-4of2)
 3. [How I build a YouTube Video Player with ReactJS: Building the Volume Control](https://dev.to/keyurparalkar/how-i-build-a-youtube-video-player-with-reactjs-building-the-volume-control-4jli)
 4. [How I build a YouTube Video Player with ReactJS: Build the Seekbar control](https://dev.to/keyurparalkar/how-i-build-a-youtube-video-player-with-reactjs-build-the-seekbar-control-3kg)
+5. [How I build a YouTube Video Player with ReactJS: Building FrameTooltip component](https://dev.to/keyurparalkar/how-i-build-a-youtube-video-player-with-reactjs-building-frametooltip-component-3o6p)
