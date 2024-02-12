@@ -15,7 +15,6 @@ interface SliderProps
 		"onClick" | "onDrag" | "onMouseUp" | "onMouseMove"
 	> {
 	$total: number;
-	// TODO(Keyur): Make use of descriminative union types with typescript such that whenever the shouldDisplayChapters exists only then all chapters along with curent chapters are available.
 	$shouldDisplayChapters?: boolean;
 	$currentTime?: number;
 	$currentChapter?: Chapter;
