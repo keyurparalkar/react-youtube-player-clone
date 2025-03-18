@@ -7,3 +7,6 @@ You can read more about how this project is implemented with the help of below b
 3. [How I build a YouTube Video Player with ReactJS: Building the Volume Control](https://dev.to/keyurparalkar/how-i-build-a-youtube-video-player-with-reactjs-building-the-volume-control-4jli)
 4. [How I build a YouTube Video Player with ReactJS: Build the Seekbar control](https://dev.to/keyurparalkar/how-i-build-a-youtube-video-player-with-reactjs-build-the-seekbar-control-3kg)
 5. [How I build a YouTube Video Player with ReactJS: Building FrameTooltip component](https://dev.to/keyurparalkar/how-i-build-a-youtube-video-player-with-reactjs-building-frametooltip-component-3o6p)
+
+This project was also demonstrated in talk held in [JSLovers meetup](https://www.meetup.com/jslovers-pune/events/298144913/). You can find the slides for the talk [here](https://github.com/keyurparalkar/react-youtube-player-clone/files/15065033/jslovers-talk-1-video_frame.pdf)
+
